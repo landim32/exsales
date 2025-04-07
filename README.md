@@ -110,7 +110,10 @@ O ExSales é uma plataforma que permite o gerenciamento de doações através de
 
 ## Tecnologias
 
-*(Adicione aqui as tecnologias utilizadas como backend, frontend, banco de dados, etc.)*
+* .NET Core
+* React
+* Next.js
+* Postgres
 
 ---
 

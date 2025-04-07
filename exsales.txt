@@ -69,6 +69,7 @@
 			* Email;
 			* Telefone;
 			* Tipo de Usuário;
+			* Plano de Rede;
 			* Status;
 			* Extrato;
 	- O usuário representante terá apenas acesso ao extrato de doações, apenas dos valores pagos, agrupado por rede, contendo os campos abaixo:
@@ -87,12 +88,20 @@
 			* Email da Rede;
 			* Valor mínimo de saque;
 			* Periodo mínimo de saque em dias;
+	- Cadastro dos Planos
+		- O adminstrador da Rede poderá cadastrar os planos possíveis, com os seguintes campos:
+			* Nome do Plano (obrigatório);
+			* Valor da parcela (obrigatório);
+			* Frequencia de pagamentos (Uma vez, limitado ou recorrente);
+			* Visibilidade (Visivel ou apenas com link);
+		- Os planos poderão ser excluídos caso não esteja ligados a nenhum usuário;
 	- Cadastro de usuários (igual ai do perfil do representante, mas com todos os usuários da rede);
 	- Extrato da Rede:
 		- o adminstrador da Rede terá acesso a um extrato da rede, agrupado por representante, contendo os seguintes campos:
 		- Agrupado por Nome da Rede;
 			- Agrupado por Representante;
 				- Data de Vencimento;
+				- Plano de Rede;
 				- Valor;
 				- Valor da Comissão;
 				- Situação (Pago);		
@@ -115,3 +124,4 @@
 		- Apenas o Adminstrador Master poderá incluir uma nova rede;
 	- Os adminstrador Master terá acesso a todos os recursos de Administrador de Rede, mas ele terá uma opção de selecionar a rede na qual estará mexendo no topo do menu. O Adminstrador de Rede só poderá ver os registros da propria rede.
 
+pla

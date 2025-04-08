@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "hvfEdnxByTDUfdv1wUPzfwtsHfLyfDf/21EZpIcZLcs=",
+  "Source": "NoChainSwap.BackgroundService",
+  "BasePath": "_content/NoChainSwap.BackgroundService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

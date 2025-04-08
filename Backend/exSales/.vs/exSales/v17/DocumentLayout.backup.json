@@ -1,0 +1,118 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{84C58D7E-C390-4AAF-98B3-F5CBB09C91BC}|DB.Infra\\DB.Infra.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\db.infra\\context\\exsalescontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{84C58D7E-C390-4AAF-98B3-F5CBB09C91BC}|DB.Infra\\DB.Infra.csproj|solutionrelative:db.infra\\context\\exsalescontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\mempoolservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\mempoolservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\mailersendservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\mailersendservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ExSalesContext.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\DB.Infra\\Context\\ExSalesContext.cs",
+              "RelativeDocumentMoniker": "DB.Infra\\Context\\ExSalesContext.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\DB.Infra\\Context\\ExSalesContext.cs",
+              "RelativeToolTip": "DB.Infra\\Context\\ExSalesContext.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T21:27:37.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserModel.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAywDIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:40:28.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\UserService.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\UserService.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\UserService.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAYwBgAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:37:02.092Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TransactionService.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\TransactionService.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\TransactionService.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\TransactionService.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\TransactionService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:36:13.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MempoolService.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MempoolService.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\MempoolService.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MempoolService.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\MempoolService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:36:10.225Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MailerSendService.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MailerSendService.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\MailerSendService.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MailerSendService.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\MailerSendService.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:35:15.358Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

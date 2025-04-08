@@ -44,16 +44,21 @@
 	- Todos os usuários terão acesso para alterar os seus dados;
 	- Usuários não podem ser excluídos do sistema, apenas ter a sua situação alterada;
 	- Usuários podem fazer parte de uma ou mais redes. Caso façam parte, terão a lista de todas as redes que fazem parte no menu. Poderam usar uma rede de cada vez. Apenas o Adminstrador Master terá acesso a todas as redes;
-  3.1. Perfil Doador
+  3.1. Papel Doador
 	- O usuário doador terá apenas acesso ao extrato de doações, que aparecerá na tela inicial, contendo os campos abaixo:
 		- Data de Vencimento;
 		- Nome da Rede;
 		- Valor (Valores sem Comissões);
 		- Situação (Aberto, Pago ou Pendente);
 		- Botão "Pagar" (para Situação "Aberto" ou "Pedente")
+	- Formulário de Cadastro:
+		* Nome completo (obrigatório);
+		* Email (obrigatório);
+		* Telefone (Opcional);
+		* Cpf (obrigatório);
 	- Para os pagamentos em situação Aberto ou Pendente, o doador poderá clicar em "Pagar" e seja direcionado para a página de pagamento;
 	- Caso o doador faça parte de mais de uma rede, ela aparecerá no menu do site para selecionar;
-  3.2. Perfil Representante
+  3.2. Papel Representante
 	- Links:
 		- O representante tem os links de doação e de indicação de representante, nesse local ele poderá copia-los;
 	- Opção de Saque:
@@ -78,7 +83,16 @@
 			- Valor;
 			- Valor da Comissão;
 			- Situação (Pago);
-  3.3. Perfil Adminstrador da Rede
+	- Na tela de cadastro, o representante deverá preencher os seguintes campos:
+		* Nome completo (obrigatório);
+		* Email (obrigatório);
+		* Telefone (Obrigatório);
+		* Cpf (obrigatório);
+		* Data de Nascimento (obrigatório);
+		* Endereço completo (obrigatório);
+		* Upload de Documento (obrigatório);
+		* Dados Bancários para deposíto (obrigatório);
+  3.3. Papel Adminstrador da Rede
     - Cadastro da Rede;
 		- O Administrador de rede poderá alterar apenas os da rede selecionada.
 		- No cadastro da rede existem os seguintes campos:
@@ -88,6 +102,13 @@
 			* Email da Rede;
 			* Valor mínimo de saque;
 			* Periodo mínimo de saque em dias;
+	- Cadastro de níveis de usuário:
+		- Lista todos os níveis de usuário pelo nome;
+		- No cadastro de nível de usuário, o administrador de rede deverá preencher os seguintes campos:
+			- Nome do nível;
+			- Número do nível;
+			- Porcentagem de comissão;
+		- O nível 0 sempre será o usuário de perfil doador, os outros níveis são representantes;
 	- Cadastro dos Planos
 		- O adminstrador da Rede poderá cadastrar os planos possíveis, com os seguintes campos:
 			* Nome do Plano (obrigatório);
@@ -95,7 +116,8 @@
 			* Frequencia de pagamentos (Uma vez, limitado ou recorrente);
 			* Visibilidade (Visivel ou apenas com link);
 		- Os planos poderão ser excluídos caso não esteja ligados a nenhum usuário;
-	- Cadastro de usuários (igual ai do perfil do representante, mas com todos os usuários da rede);
+	- Lista de usuário (igual ai do Papel do representante, mas com todos os usuários da rede);
+	- Na tela de cadastro (igual ai do Papel do representante, mas o administrador de rede pode mudar o nível do representante);
 	- Extrato da Rede:
 		- o adminstrador da Rede terá acesso a um extrato da rede, agrupado por representante, contendo os seguintes campos:
 		- Agrupado por Nome da Rede;
@@ -105,7 +127,7 @@
 				- Valor;
 				- Valor da Comissão;
 				- Situação (Pago);		
-  3.4. Perfil Adminstrador Master
+  3.4. Papel Adminstrador Master
 	- Lista de Redes;
 		- Lista de todas as redes cadastradas no sistema. Essa lista contem:
 			* Nome da Rede;
@@ -123,5 +145,3 @@
 			* Periodo mínimo de saque em dias;
 		- Apenas o Adminstrador Master poderá incluir uma nova rede;
 	- Os adminstrador Master terá acesso a todos os recursos de Administrador de Rede, mas ele terá uma opção de selecionar a rede na qual estará mexendo no topo do menu. O Adminstrador de Rede só poderá ver os registros da propria rede.
-
-pla

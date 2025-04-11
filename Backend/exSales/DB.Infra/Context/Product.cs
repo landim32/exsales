@@ -19,7 +19,7 @@ public partial class Product
 
     public int Status { get; set; }
 
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
-
     public virtual Network Network { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

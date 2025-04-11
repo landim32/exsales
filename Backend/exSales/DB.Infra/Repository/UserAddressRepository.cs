@@ -1,8 +1,8 @@
 ﻿using Core.Domain.Repository;
 using DB.Infra.Context;
-using exSales.Domain.Impl.Models;
 using exSales.Domain.Interfaces.Factory;
 using exSales.Domain.Interfaces.Models;
+using exSales.DTO.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,95 +13,72 @@ namespace DB.Infra.Repository
 {
     public class UserAddressRepository : IUserAddressRepository<IUserAddressModel, IUserAddressDomainFactory>
     {
-        private NoChainSwapContext _ccsContext;
+        private ExSalesContext _ccsContext;
 
-        public UserAddressRepository(NoChainSwapContext ccsContext)
+        public UserAddressRepository(ExSalesContext ccsContext)
         {
             _ccsContext = ccsContext;
         }
-        private IUserAddressModel DbToModel(IUserAddressDomainFactory factory, UserAddress u)
+
+        private IUserAddressModel DbToModel(IUserAddressDomainFactory factory, UserAddress row)
         {
             var md = factory.BuildUserAddressModel();
-            md.Id = u.AddressId;
-            md.UserId = u.UserId;
-            md.Chain = (ChainEnum) u.ChainId;
-            md.Address = u.Address;
-            md.CreateAt = u.CreateAt;
-            md.UpdateAt = u.UpdateAt;
+            md.AddressId = row.AddressId;
+            md.UserId = row.UserId;
+            md.ZipCode = row.ZipCode;
+            md.Address = row.Address;
+            md.Complement = row.Complement;
+            md.Neighborhood = row.Neighborhood;
+            md.City = row.City;
+            md.State = row.State;
             return md;
         }
 
-        private void ModelToDb(IUserAddressModel u, UserAddress md)
+        private void ModelToDb(IUserAddressModel md, UserAddress row)
         {
-            md.AddressId = u.Id;
-            md.UserId = u.UserId;
-            md.ChainId = (int) u.Chain;
-            md.Address = u.Address;
-            md.CreateAt = u.CreateAt;
-            md.UpdateAt = u.UpdateAt;
+            row.AddressId = md.AddressId;
+            row.UserId = md.UserId;
+            row.ZipCode = md.ZipCode;
+            row.Address = md.Address;
+            row.Complement = md.Complement;
+            row.Neighborhood = md.Neighborhood;
+            row.City = md.City;
+            row.State = md.State;
         }
 
-        public IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory)
+        public IUserAddressModel Insert(IUserAddressModel model, IUserAddressDomainFactory factory)
         {
-            var rows = _ccsContext.UserAddresses.Where(x => x.UserId == userId).ToList();
-            return rows.Select(x => DbToModel(factory, x));
-        }
-
-        public IUserAddressModel GetById(long addressId, IUserAddressDomainFactory factory)
-        {
-            var row = _ccsContext.UserAddresses.Find(addressId);
-            if (row == null)
-                return null;
-            return DbToModel(factory, row);
-        }
-
-        public IUserAddressModel GetByChain(long userId, int ChainId, IUserAddressDomainFactory factory)
-        {
-            var addr = _ccsContext.UserAddresses
-                .Where(x => x.UserId == userId && x.ChainId == ChainId)
-                .FirstOrDefault();
-            if (addr == null)
-            {
-                return null;
-            }
-            return DbToModel(factory, addr);
-        }
-
-        public IUserAddressModel Insert(IUserAddressModel model)
-        {
-            var u = new UserAddress();
-            ModelToDb(model, u);
-            u.CreateAt = DateTime.Now;
-            u.UpdateAt = DateTime.Now;
-            _ccsContext.Add(u);
+            var row = new UserAddress();
+            ModelToDb(model, row);
+            _ccsContext.Add(row);
             _ccsContext.SaveChanges();
-            model.Id = u.AddressId;
+            model.AddressId = row.AddressId;
             return model;
         }
 
-        public IUserAddressModel Update(IUserAddressModel model)
+        public IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory)
         {
-            var row = _ccsContext.UserAddresses.Find(model.Id);
-            if (row == null)
-            {
-                throw new Exception("User address not found");
-            }
+            var row = _ccsContext.UserAddresses.Find(model.AddressId);
             ModelToDb(model, row);
-            row.UpdateAt = DateTime.Now;
             _ccsContext.UserAddresses.Update(row);
             _ccsContext.SaveChanges();
             return model;
         }
 
-        public void Delete(long id)
+        public void Delete(long addressId)
         {
-            var row = _ccsContext.UserAddresses.Find(id);
+            var row = _ccsContext.UserAddresses.Find(addressId);
             if (row == null)
-            {
-                throw new Exception("User address not found");
-            }
+                return;
             _ccsContext.UserAddresses.Remove(row);
             _ccsContext.SaveChanges();
+        }
+
+        public IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory)
+        {
+            return _ccsContext.UserAddresses
+                .Where(x => x.UserId == userId)
+                .Select(x => DbToModel(factory, x));
         }
     }
 }

@@ -24,9 +24,12 @@ namespace exSales.Domain.Impl.Models
         public string Token { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string IdDocument { get; set; }
+        public string PixKey { get; set; }
+        public DateTime? BirthDate { get; set; }
         public bool IsAdmin { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime UpdateAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         private string CreateMD5(string input)
         {
@@ -78,11 +81,6 @@ namespace exSales.Domain.Impl.Models
         public IEnumerable<IUserModel> ListUsers(IUserDomainFactory factory)
         {
             return _repositoryUser.ListUsers(factory);
-        }
-
-        public IUserModel GetByAddress(ChainEnum chain, string address, IUserDomainFactory factory)
-        {
-            return _repositoryUser.GetByAddress((int)chain, address, factory);
         }
 
         public IUserModel GetByEmail(string email, IUserDomainFactory factory)

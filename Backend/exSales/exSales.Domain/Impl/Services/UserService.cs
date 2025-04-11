@@ -17,13 +17,11 @@ namespace exSales.Domain.Impl.Services
     public class UserService : IUserService
     {
         private readonly IUserDomainFactory _userFactory;
-        private readonly IUserAddressDomainFactory _userAddressFactory;
         private readonly IMailerSendService _mailerSendService;
 
-        public UserService(IUserDomainFactory userFactory, IUserAddressDomainFactory userAddressFactory, IMailerSendService mailerSendService)
+        public UserService(IUserDomainFactory userFactory, IMailerSendService mailerSendService)
         {
             _userFactory = userFactory;
-            _userAddressFactory = userAddressFactory;
             _mailerSendService = mailerSendService;
         }
 
@@ -157,8 +155,8 @@ namespace exSales.Domain.Impl.Services
 
             model.Name = user.Name;
             model.Email = user.Email;
-            model.CreateAt = DateTime.Now;
-            model.UpdateAt = DateTime.Now;
+            model.CreatedAt = DateTime.Now;
+            model.UpdatedAt = DateTime.Now;
             model.Hash = GetUniqueToken();
 
             var md = model.Save(_userFactory);
@@ -193,7 +191,7 @@ namespace exSales.Domain.Impl.Services
             }
             model.Name = user.Name;
             model.Email = user.Email;
-            model.UpdateAt = DateTime.Now;
+            model.UpdatedAt = DateTime.Now;
             model.Update(_userFactory);
             return model;
         }
@@ -201,11 +199,6 @@ namespace exSales.Domain.Impl.Services
         public IUserModel GetUserByEmail(string email)
         {
             return _userFactory.BuildUserModel().GetByEmail(email, _userFactory);
-        }
-
-        public IUserModel GetUserByAddress(ChainEnum chain, string address)
-        {
-            return _userFactory.BuildUserModel().GetByAddress(chain, address, _userFactory);
         }
 
         public IUserModel GetUserByID(long userId)
@@ -218,6 +211,7 @@ namespace exSales.Domain.Impl.Services
             return _userFactory.BuildUserModel().GetByToken(token, _userFactory);
         }
 
+        /*
         public IUserModel GetUserHash(ChainEnum chain, string address)
         {
             var user = _userFactory.BuildUserModel().GetByAddress(chain, address, _userFactory);
@@ -231,6 +225,7 @@ namespace exSales.Domain.Impl.Services
                 return user;
             }
         }
+        */
 
         public UserInfo GetUserInSession(HttpContext httpContext)
         {
@@ -284,39 +279,6 @@ namespace exSales.Domain.Impl.Services
         public IEnumerable<IUserModel> GetAllUserAddress()
         {
             return _userFactory.BuildUserModel().ListAllUsers(_userFactory);
-        }
-
-        public IEnumerable<IUserAddressModel> ListAddressByUser(long userId)
-        {
-            return _userAddressFactory.BuildUserAddressModel().ListByUser(userId, _userAddressFactory);
-        }
-        public IUserAddressModel GetAddressByChain(long userId, ChainEnum chain)
-        {
-            return _userAddressFactory.BuildUserAddressModel().GetByChain(userId, chain, _userAddressFactory);
-        }
-        public void AddOrChangeAddress(long userId, ChainEnum chain, string address)
-        {
-            var addr = _userAddressFactory.BuildUserAddressModel().GetByChain(userId, chain, _userAddressFactory);
-            if (addr != null)
-            {
-                addr.Address = address;
-                addr.Update();
-            }
-            else
-            {
-                addr = _userAddressFactory.BuildUserAddressModel();
-                addr.UserId = userId;
-                addr.Chain = chain;
-                addr.Address = address;
-                addr.Insert();
-            }
-        }
-        public void RemoveAddress(long userId, ChainEnum chain) {
-            var addr = _userAddressFactory.BuildUserAddressModel().GetByChain(userId, chain, _userAddressFactory);
-            if (addr != null)
-            {
-                _userAddressFactory.BuildUserAddressModel().Remove(addr.Id);
-            }
         }
     }
 }

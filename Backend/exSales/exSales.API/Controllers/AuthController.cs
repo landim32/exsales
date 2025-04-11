@@ -35,8 +35,8 @@ namespace exSales.API.Controllers
             var user = new UserInfo { 
                 Id = md.Id,
                 Hash = md.Hash,
-                CreateAt = md.CreateAt,
-                UpdateAt = md.UpdateAt,
+                CreatedAt = md.CreatedAt,
+                UpdatedAt = md.UpdatedAt,
                 Name = md.Name,
                 Email = md.Email
             };
@@ -49,6 +49,7 @@ namespace exSales.API.Controllers
             try
             {
                 //Console.WriteLine("Chegou aqui");
+                /*
                 var user = _userService.GetUserByAddress((ChainEnum)chainId, address);
                 if (user == null)
                 {
@@ -58,6 +59,8 @@ namespace exSales.API.Controllers
                 {
                     User = ModelToInfo(user)
                 };
+                */
+                return null;
             }
             catch (Exception ex)
             {

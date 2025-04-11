@@ -7,7 +7,7 @@ public partial class Invoice
 {
     public long InvoiceId { get; set; }
 
-    public long ProductId { get; set; }
+    public long OrderId { get; set; }
 
     public long UserId { get; set; }
 
@@ -21,7 +21,7 @@ public partial class Invoice
 
     public int Status { get; set; }
 
-    public virtual Product Product { get; set; }
+    public virtual Order Order { get; set; }
 
     public virtual User Seller { get; set; }
 

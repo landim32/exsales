@@ -1,6 +1,4 @@
-﻿using exSales.Domain.Impl.Factory;
-using exSales.Domain.Impl.Models;
-using exSales.Domain.Interfaces.Factory;
+﻿using exSales.Domain.Interfaces.Factory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +9,25 @@ namespace exSales.Domain.Interfaces.Models
 {
     public interface IUserAddressModel
     {
-        long Id { get; set; }
-        long UserId { get; set; }
-        ChainEnum Chain { get; set; }
-        DateTime CreateAt { get; set; }
-        DateTime UpdateAt { get; set; }
-        string Address {  get; set; }
-        IUserAddressModel Insert();
-        IUserAddressModel Update();
+        long AddressId { get; set; }
 
-        void Remove(long addressId);
+        public long UserId { get; set; }
+
+        string ZipCode { get; set; }
+
+        string Address { get; set; }
+
+        string Complement { get; set; }
+
+        string Neighborhood { get; set; }
+
+        string City { get; set; }
+
+        string State { get; set; }
+
         IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory);
-        IUserAddressModel GetById(long id, IUserAddressDomainFactory factory);
-        IUserAddressModel GetByChain(long userId, ChainEnum chain, IUserAddressDomainFactory factory);
-
+        IUserAddressModel Insert(IUserAddressModel model, IUserAddressDomainFactory factory);
+        IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory);
+        void Delete(long addressId);
     }
 }

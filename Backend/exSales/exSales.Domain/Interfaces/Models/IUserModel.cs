@@ -11,13 +11,15 @@ namespace exSales.Domain.Interfaces.Models
         string Hash { get; set; }
         string Name { get; set; }
         string Email { get; set; }
+        string IdDocument { get; set; }
+        string PixKey { get; set; }
+        DateTime? BirthDate { get; set; }
+        DateTime CreatedAt { get; set; }
+        DateTime UpdatedAt { get; set; }
         bool IsAdmin { get; set; }
-        DateTime CreateAt { get; set; }
-        DateTime UpdateAt { get; set; }
 
         IUserModel Save(IUserDomainFactory factory);
         IUserModel Update(IUserDomainFactory factory);
-        IUserModel GetByAddress(ChainEnum chain, string address, IUserDomainFactory factory);
         IUserModel GetByEmail(string email, IUserDomainFactory factory);
         IUserModel GetById(long userId, IUserDomainFactory factory);
         IUserModel GetByToken(string token, IUserDomainFactory factory);

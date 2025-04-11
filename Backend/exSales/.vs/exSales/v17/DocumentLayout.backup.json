@@ -3,28 +3,112 @@
   "WorkspaceRootPath": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{84C58D7E-C390-4AAF-98B3-F5CBB09C91BC}|DB.Infra\\DB.Infra.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\db.infra\\context\\exsalescontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{84C58D7E-C390-4AAF-98B3-F5CBB09C91BC}|DB.Infra\\DB.Infra.csproj|solutionrelative:db.infra\\context\\exsalescontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.api\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|solutionrelative:exsales.api\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|solutionrelative:exsales.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.api\\exsales.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{3B88C798-479A-4EB0-8F68-23B3EF1AFAE8}|exSales.API\\exSales.API.csproj|solutionrelative:exsales.api\\exsales.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5DE107B9-14A2-4A93-ACF8-E6F6BE632AC6}|exSales.Application\\exSales.Application.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.application\\initializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5DE107B9-14A2-4A93-ACF8-E6F6BE632AC6}|exSales.Application\\exSales.Application.csproj|solutionrelative:exsales.application\\initializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\userprofiledomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\userprofiledomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\userphonedomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\userphonedomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\usernetworkdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\usernetworkdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\userdocumentdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\userdocumentdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\useraddressdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\useraddressdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\productdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\productdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\orderdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\orderdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\networkdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\networkdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\invoicedomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\invoicedomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\factory\\userdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\factory\\userdomainfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\userprofilemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\userprofilemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\userphonemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\userphonemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\usernetworkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\usernetworkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\userdocumentmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\userdocumentmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\useraddressmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\useraddressmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\productmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\productmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\ordermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\ordermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\networkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\networkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\invoicemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\invoicemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\interfaces\\models\\inetworkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\interfaces\\models\\inetworkmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E149BFCB-5FFB-44D5-8FA0-BE1480D2D8CA}|Core.Domain\\Core.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\core.domain\\repository\\inetworkrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E149BFCB-5FFB-44D5-8FA0-BE1480D2D8CA}|Core.Domain\\Core.Domain.csproj|solutionrelative:core.domain\\repository\\inetworkrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\mempoolservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\mempoolservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\impl\\services\\mailersendservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\impl\\services\\mailersendservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|c:\\git\\projetos\\exsales\\backend\\exsales\\exsales.domain\\interfaces\\models\\iusermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1075D98-F8C9-4101-A9BD-D86B2AECA385}|exSales.Domain\\exSales.Domain.csproj|solutionrelative:exsales.domain\\interfaces\\models\\iusermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,81 +118,347 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ExSalesContext.cs",
-              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\DB.Infra\\Context\\ExSalesContext.cs",
-              "RelativeDocumentMoniker": "DB.Infra\\Context\\ExSalesContext.cs",
-              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\DB.Infra\\Context\\ExSalesContext.cs",
-              "RelativeToolTip": "DB.Infra\\Context\\ExSalesContext.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "exSales.API",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\exSales.API.csproj",
+              "RelativeDocumentMoniker": "exSales.API\\exSales.API.csproj",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\exSales.API.csproj",
+              "RelativeToolTip": "exSales.API\\exSales.API.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-11T19:53:48.93Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Initializer.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Application\\Initializer.cs",
+              "RelativeDocumentMoniker": "exSales.Application\\Initializer.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Application\\Initializer.cs",
+              "RelativeToolTip": "exSales.Application\\Initializer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T21:27:37.473Z",
+              "WhenOpened": "2025-04-11T19:22:00.737Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\Startup.cs",
+              "RelativeDocumentMoniker": "exSales.API\\Startup.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\Startup.cs",
+              "RelativeToolTip": "exSales.API\\Startup.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAQwEMAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T19:21:41.547Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\Program.cs",
+              "RelativeDocumentMoniker": "exSales.API\\Program.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.API\\Program.cs",
+              "RelativeToolTip": "exSales.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T19:21:00.458Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserProfileDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserProfileDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserProfileDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserProfileDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserProfileDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T19:18:21.885Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserPhoneDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserPhoneDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserPhoneDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserPhoneDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserPhoneDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T19:15:12.723Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UserNetworkDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserNetworkDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserNetworkDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserNetworkDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserNetworkDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:29:30.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserDocumentDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserDocumentDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserDocumentDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserDocumentDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserDocumentDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:27:04.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserAddressDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserAddressDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserAddressDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserAddressDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserAddressDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:24:04.142Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ProductDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\ProductDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\ProductDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\ProductDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\ProductDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:18:09.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "OrderDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\OrderDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\OrderDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\OrderDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\OrderDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:16:10.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "NetworkDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\NetworkDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\NetworkDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\NetworkDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\NetworkDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:10:06.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "InvoiceDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\InvoiceDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\InvoiceDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\InvoiceDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\InvoiceDomainFactory.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:05:59.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "UserDomainFactory.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserDomainFactory.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Factory\\UserDomainFactory.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Factory\\UserDomainFactory.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Factory\\UserDomainFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T18:02:55.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UserProfileModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserProfileModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserProfileModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserProfileModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserProfileModel.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA2wCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T17:51:59.081Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserPhoneModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserPhoneModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserPhoneModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserPhoneModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserPhoneModel.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAUwA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-11T17:44:45.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "UserNetworkModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserNetworkModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserNetworkModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserNetworkModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserNetworkModel.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:57:25.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UserDocumentModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserDocumentModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserDocumentModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserDocumentModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserDocumentModel.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAIwA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:50:34.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "UserAddressModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserAddressModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserAddressModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserAddressModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserAddressModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:25:09.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "ProductModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\ProductModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\ProductModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\ProductModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\ProductModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:19:58.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "OrderModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\OrderModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\OrderModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\OrderModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\OrderModel.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:11:21.87Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "NetworkModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\NetworkModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\NetworkModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\NetworkModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\NetworkModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T21:04:21.012Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "InvoiceModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\InvoiceModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\InvoiceModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\InvoiceModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Impl\\Models\\InvoiceModel.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T20:50:01.123Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "INetworkRepository.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\Core.Domain\\Repository\\INetworkRepository.cs",
+              "RelativeDocumentMoniker": "Core.Domain\\Repository\\INetworkRepository.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\Core.Domain\\Repository\\INetworkRepository.cs",
+              "RelativeToolTip": "Core.Domain\\Repository\\INetworkRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T20:59:27.986Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "INetworkModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Interfaces\\Models\\INetworkModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Interfaces\\Models\\INetworkModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Interfaces\\Models\\INetworkModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Interfaces\\Models\\INetworkModel.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAwB0AAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T20:59:06.431Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "IUserModel.cs",
+              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Interfaces\\Models\\IUserModel.cs",
+              "RelativeDocumentMoniker": "exSales.Domain\\Interfaces\\Models\\IUserModel.cs",
+              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Interfaces\\Models\\IUserModel.cs",
+              "RelativeToolTip": "exSales.Domain\\Interfaces\\Models\\IUserModel.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T20:48:26.554Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
               "Title": "UserModel.cs",
               "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserModel.cs",
               "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Models\\UserModel.cs",
               "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Models\\UserModel.cs",
               "RelativeToolTip": "exSales.Domain\\Impl\\Models\\UserModel.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAywDIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACwAAAAAAAAAAAAmwA0AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:40:28.769Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\UserService.cs",
-              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\UserService.cs",
-              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\UserService.cs",
-              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\UserService.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAYwBgAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:37:02.092Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TransactionService.cs",
-              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\TransactionService.cs",
-              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\TransactionService.cs",
-              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\TransactionService.cs",
-              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\TransactionService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:36:13.245Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MempoolService.cs",
-              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MempoolService.cs",
-              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\MempoolService.cs",
-              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MempoolService.cs",
-              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\MempoolService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:36:10.225Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MailerSendService.cs",
-              "DocumentMoniker": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MailerSendService.cs",
-              "RelativeDocumentMoniker": "exSales.Domain\\Impl\\Services\\MailerSendService.cs",
-              "ToolTip": "C:\\Git\\Projetos\\exsales\\Backend\\exSales\\exSales.Domain\\Impl\\Services\\MailerSendService.cs",
-              "RelativeToolTip": "exSales.Domain\\Impl\\Services\\MailerSendService.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:35:15.358Z"
+              "WhenOpened": "2025-04-10T20:48:20.174Z"
             }
           ]
         }

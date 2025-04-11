@@ -13,51 +13,41 @@ namespace exSales.Domain.Impl.Models
     public class UserAddressModel : IUserAddressModel
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserAddressRepository<IUserAddressModel, IUserAddressDomainFactory> _repositoryUserAddr;
+        private readonly IUserAddressRepository<IUserAddressModel, IUserAddressDomainFactory> _repositoryAddr;
 
-        public UserAddressModel(IUnitOfWork unitOfWork, IUserAddressRepository<IUserAddressModel, IUserAddressDomainFactory> repositoryUserAddr)
+        public UserAddressModel(IUnitOfWork unitOfWork, IUserAddressRepository<IUserAddressModel, IUserAddressDomainFactory> repositoryAddr)
         {
             _unitOfWork = unitOfWork;
-            _repositoryUserAddr = repositoryUserAddr;
+            _repositoryAddr = repositoryAddr;
         }
 
-        public long Id { get; set; }
+        public long AddressId { get; set; }
         public long UserId { get; set; }
-        public ChainEnum Chain { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime UpdateAt { get; set; }
+        public string ZipCode { get; set; }
         public string Address { get; set; }
+        public string Complement { get; set; }
+        public string Neighborhood { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
 
-        public IUserAddressModel GetByChain(long userId, ChainEnum chain, IUserAddressDomainFactory factory)
+        public void Delete(long addressId)
         {
-            return _repositoryUserAddr.GetByChain(userId, (int)chain, factory);
+            _repositoryAddr.Delete(addressId);
         }
 
-        public IUserAddressModel GetById(long id, IUserAddressDomainFactory factory)
+        public IUserAddressModel Insert(IUserAddressModel model, IUserAddressDomainFactory factory)
         {
-            return _repositoryUserAddr.GetById(id, factory);
+            return _repositoryAddr.Insert(model, factory);
         }
 
         public IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory)
         {
-            return _repositoryUserAddr.ListByUser(userId, factory);
+            return _repositoryAddr.ListByUser(userId, factory);
         }
 
-        public IUserAddressModel Insert()
+        public IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory)
         {
-            var user = _repositoryUserAddr.Insert(this);
-            return user;
-        }
-
-        public void Remove(long addressId)
-        {
-            _repositoryUserAddr.Delete(addressId);
-        }
-
-        public IUserAddressModel Update()
-        {
-            var user = _repositoryUserAddr.Update(this);
-            return user;
+            return _repositoryAddr.Update(model, factory);
         }
     }
 }

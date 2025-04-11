@@ -19,6 +19,8 @@ public partial class ExSalesContext : DbContext
 
     public virtual DbSet<Network> Networks { get; set; }
 
+    public virtual DbSet<Order> Orders { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -49,21 +51,21 @@ public partial class ExSalesContext : DbContext
             entity.Property(e => e.DueDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("due_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.PaymentDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("payment_date");
             entity.Property(e => e.Price).HasColumnName("price");
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.SellerId).HasColumnName("seller_id");
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)
                 .HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Invoices)
-                .HasForeignKey(d => d.ProductId)
+            entity.HasOne(d => d.Order).WithMany(p => p.Invoices)
+                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_invoice_product");
+                .HasConstraintName("fk_invoice_order");
 
             entity.HasOne(d => d.Seller).WithMany(p => p.InvoiceSellers)
                 .HasForeignKey(d => d.SellerId)
@@ -96,7 +98,33 @@ public partial class ExSalesContext : DbContext
                 .HasDefaultValue(1)
                 .HasColumnName("status");
             entity.Property(e => e.WithdrawalMin).HasColumnName("withdrawal_min");
-            entity.Property(e => e.WithdrawalPeriod).HasColumnName("withdrawal_period");
+            entity.Property(e => e.WithdrawalPeriod)
+                .HasDefaultValue(0)
+                .HasColumnName("withdrawal_period");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.OrderId).HasName("orders_pkey");
+
+            entity.ToTable("orders");
+
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(1)
+                .HasColumnName("status");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_oder_product");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_order_user");
         });
 
         modelBuilder.Entity<Product>(entity =>

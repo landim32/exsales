@@ -7,8 +7,9 @@ namespace exSales.BackgroundService
 {
     public class ScheduleTask
     {
-        private ITransactionService _transactionService;
+        //private ITransactionService _transactionService;
 
+        /*
         public ScheduleTask(ITransactionService transactionService)
         {
             _transactionService = transactionService;
@@ -44,5 +45,6 @@ namespace exSales.BackgroundService
             }
             return ret;
         }
+        */
     }
 }

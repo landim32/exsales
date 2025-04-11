@@ -11,11 +11,11 @@ public partial class Network
 
     public string Email { get; set; }
 
-    public int? Commission { get; set; }
+    public double Commission { get; set; }
 
-    public double? WithdrawalMin { get; set; }
+    public double WithdrawalMin { get; set; }
 
-    public int? WithdrawalPeriod { get; set; }
+    public int WithdrawalPeriod { get; set; }
 
     public int Status { get; set; }
 

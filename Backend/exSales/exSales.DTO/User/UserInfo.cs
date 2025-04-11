@@ -18,8 +18,8 @@ namespace exSales.DTO.User
         [JsonPropertyName("isAdmin")]
         public bool IsAdmin { get; set; }
         [JsonPropertyName("createAt")]
-        public DateTime CreateAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         [JsonPropertyName("updateAt")]
-        public DateTime UpdateAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

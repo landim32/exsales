@@ -12,9 +12,9 @@ namespace DB.Infra.Repository
     public class UserRepository : IUserRepository<IUserModel, IUserDomainFactory>
     {
 
-        private NoChainSwapContext _ccsContext;
+        private ExSalesContext _ccsContext;
 
-        public UserRepository(NoChainSwapContext ccsContext)
+        public UserRepository(ExSalesContext ccsContext)
         {
             _ccsContext = ccsContext;
         }
@@ -27,8 +27,8 @@ namespace DB.Infra.Repository
             md.Name = u.Name;
             md.Email = u.Email;
             md.IsAdmin = u.IsAdmin;
-            md.CreateAt = u.CreateAt;
-            md.UpdateAt = u.UpdateAt;
+            md.CreatedAt = u.CreatedAt;
+            md.UpdatedAt = u.UpdatedAt;
             return md;
         }
 
@@ -39,8 +39,8 @@ namespace DB.Infra.Repository
             row.Name = md.Name;
             row.Email = md.Email;
             row.IsAdmin = md.IsAdmin;
-            row.CreateAt = md.CreateAt;
-            row.UpdateAt = md.UpdateAt;
+            row.CreatedAt = md.CreatedAt;
+            row.UpdatedAt = md.UpdatedAt;
         }
 
         public IUserModel GetById(long userId, IUserDomainFactory factory)
@@ -55,7 +55,7 @@ namespace DB.Infra.Repository
         {
             var row = _ccsContext.Users.Where(x => x.UserId == model.Id).FirstOrDefault();
             ModelToDb(model, row);
-            row.UpdateAt = DateTime.Now;
+            row.UpdatedAt = DateTime.Now;
             _ccsContext.Users.Update(row);
             _ccsContext.SaveChanges();
             return model;
@@ -66,8 +66,8 @@ namespace DB.Infra.Repository
         {
             var u = new User();
             ModelToDb(model, u);
-            u.CreateAt = DateTime.Now;
-            u.UpdateAt = DateTime.Now;
+            u.CreatedAt = DateTime.Now;
+            u.UpdatedAt = DateTime.Now;
             _ccsContext.Add(u);
             _ccsContext.SaveChanges();
             model.Id = u.UserId;
@@ -83,18 +83,6 @@ namespace DB.Infra.Repository
         public IUserModel GetByEmail(string email, IUserDomainFactory factory)
         {
             var row = _ccsContext.Users.Where(x => x.Email == email).FirstOrDefault();
-            if (row != null)
-            {
-                return DbToModel(factory, row);
-            }
-            return null;
-        }
-
-        public IUserModel GetByAddress(int chainId, string address, IUserDomainFactory factory)
-        {
-            var row = _ccsContext.UserAddresses
-                .Where(x => x.ChainId == chainId && x.Address == address)
-                .Select(x => x.User).FirstOrDefault();
             if (row != null)
             {
                 return DbToModel(factory, row);
@@ -152,7 +140,7 @@ namespace DB.Infra.Repository
         public void UpdateRecoveryHash(long userId, string recoveryHash)
         {
             var row = _ccsContext.Users.Find(userId);
-            row.UpdateAt = DateTime.Now;
+            row.UpdatedAt = DateTime.Now;
             row.RecoveryHash = recoveryHash;
             _ccsContext.Users.Update(row);
             _ccsContext.SaveChanges();
@@ -161,7 +149,7 @@ namespace DB.Infra.Repository
         public void ChangePassword(long userId, string encryptPwd)
         {
             var row = _ccsContext.Users.Find(userId);
-            row.UpdateAt = DateTime.Now;
+            row.UpdatedAt = DateTime.Now;
             row.Password = encryptPwd;
             _ccsContext.Users.Update(row);
             _ccsContext.SaveChanges();

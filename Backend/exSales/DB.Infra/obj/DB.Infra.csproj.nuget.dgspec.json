@@ -245,18 +245,6 @@
               "target": "Package",
               "version": "[8.0.1, )"
             },
-            "NBitcoin": {
-              "target": "Package",
-              "version": "[7.0.40, )"
-            },
-            "Nethereum.HdWallet": {
-              "target": "Package",
-              "version": "[4.26.0, )"
-            },
-            "Nethereum.Web3": {
-              "target": "Package",
-              "version": "[4.26.0, )"
-            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"

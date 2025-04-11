@@ -10,6 +10,7 @@ namespace NoChainSwapBackgroundService
 {
     public class Service : BackgroundService
     {
+        /*
         private IConfiguration _configuration;
 
         private CrontabSchedule _schedule;
@@ -24,8 +25,10 @@ namespace NoChainSwapBackgroundService
             _nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
             _gwScheduleTask = gwScheduleTask;
         }
+        */
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            /*
             do
             {
                 var now = DateTime.UtcNow;
@@ -33,14 +36,15 @@ namespace NoChainSwapBackgroundService
 
                 if (now > _nextRun)
                 {
-                    await _gwScheduleTask.DetectNewTransactions();
-                    await _gwScheduleTask.ProccessAllTransactions();
+                    //await _gwScheduleTask.DetectNewTransactions();
+                    //await _gwScheduleTask.ProccessAllTransactions();
                     _nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
                 }
                 
                 await Task.Delay(60000, stoppingToken);
             }
             while (!stoppingToken.IsCancellationRequested); ;
+            */
         }
     }
 }

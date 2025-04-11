@@ -35,6 +35,8 @@ public partial class User
 
     public virtual ICollection<Invoice> InvoiceUsers { get; set; } = new List<Invoice>();
 
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual ICollection<UserDocument> UserDocuments { get; set; } = new List<UserDocument>();
 
     public virtual ICollection<UserPhone> UserPhones { get; set; } = new List<UserPhone>();

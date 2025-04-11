@@ -35,7 +35,7 @@ namespace exSales.API
         {
             var config = new ConfigurationParam
             {
-                ConnectionString = Configuration.GetConnectionString("NoChainSwapContext"),
+                ConnectionString = Configuration.GetConnectionString("exSalesContext"),
                 WalletStxApi = Configuration.GetSection("Stacks:WalletApi").Value,
                 StacksApi = Configuration.GetSection("Stacks:StacksApi").Value
             };
@@ -44,7 +44,7 @@ namespace exSales.API
             services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BTCSTXSwap.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "exSales.API", Version = "v1" });
             });
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
@@ -65,7 +65,7 @@ namespace exSales.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BTCSTXSwap.API v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "exSales.API v1"));
             }
             else
             {

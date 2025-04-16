@@ -1,0 +1,100 @@
+import './App.css';
+import { Routes, Route, Outlet, Link } from "react-router-dom";
+import Menu from "./Components/Menu";
+import SwapForm from './Pages/SwapForm';
+import ContextBuilder from './Contexts/Utils/ContextBuilder';
+import AuthProvider from './Contexts/Auth/AuthProvider';
+import SwapProvider from './Contexts/Swap/SwapProvider';
+import ListTxPage from './Pages/ListTxPage';
+import TxProvider from './Contexts/Transaction/TxProvider';
+import UserPage from './Pages/UserPage';
+import PasswordPage from './Pages/PasswordPage';
+import LoginPage from './Pages/LoginPage';
+import RecoveryPage from './Pages/RecoveryPage';
+import UserProvider from './Contexts/User/UserProvider';
+import TxPage from './Pages/TxPage';
+import AllListTxPage from './Pages/AllListTxPage';
+import HomePage from './Pages/HomePage';
+import SellerPage from './Pages/SellerPage';
+import NetworkPage from './Pages/NetworkPage';
+import DashboardPage from './Pages/DashboardPage';
+import NetworkEditPage from './Pages/NetworkEditPage';
+import NetworkListPage from './Pages/NetworkListPage';
+import TeamStructurePage from './Pages/TeamStructurePage';
+import TeamStructureEditPage from './Pages/TeamStructureEditPage';
+import TeamPage from './Pages/TeamPage';
+import OrderListPage from './Pages/OrderListPage';
+import InvoiceListPage from './Pages/InvoiceListPage';
+import ProductListPage from './Pages/ProductListPage';
+import ProductEditPage from './Pages/ProductEditPage';
+import ProductPage from './Pages/ProductPage';
+
+function Error404() {
+  return (
+    <div>
+      <h2>Error 404</h2>
+    </div>
+  );
+}
+
+function Layout() {
+  return (
+    <div>
+      <Menu />
+      <Outlet />
+    </div>
+  );
+}
+
+function App() {
+  const ContextContainer = ContextBuilder([AuthProvider, UserProvider, SwapProvider, TxProvider]);
+
+  return (
+    <ContextContainer>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="new-seller" element={<SellerPage />} />
+          <Route path="network">
+            <Route index element={<NetworkEditPage />} />
+            <Route path="search" element={<NetworkListPage />} />
+          </Route>
+          <Route path="network" element={<NetworkEditPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="edit-account" element={<UserPage />} />
+          <Route path="new-account" element={<UserPage />} />
+          <Route path="recovery-password" element={<RecoveryPage />} />
+          <Route path="change-password" element={<PasswordPage />} />
+          <Route path="minha-rede">
+            <Route index element={<NetworkPage />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="network" element={<NetworkEditPage />} />
+            <Route path="teams" element={<TeamPage />} />
+            <Route path="orders" element={<OrderListPage />} />
+            <Route path="invoices" element={<InvoiceListPage />} />
+            <Route path="products">
+              <Route index element={<ProductListPage />} />
+              <Route path="new" element={<ProductEditPage />} />
+              <Route path=":id" element={<ProductEditPage />} />
+            </Route>
+            <Route path="p">
+              <Route path=":id" element={<ProductPage />} />
+            </Route>
+            <Route path="team-structure">
+              <Route index element={<TeamStructurePage />} />
+              <Route path="new" element={<TeamStructureEditPage />} />
+              <Route path=":id" element={<TeamStructureEditPage />} />
+            </Route>
+          </Route>
+          <Route path="my-swaps">
+            <Route index element={<ListTxPage OnlyMyTx={true} />} />
+            <Route path=":txid" element={<ListTxPage OnlyMyTx={true} />} />
+          </Route>
+          <Route path="*" element={<Error404 />} />
+        </Route>
+      </Routes>
+    </ContextContainer>
+  );
+}
+
+export default App;

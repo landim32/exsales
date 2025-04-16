@@ -71,8 +71,8 @@ O **ExSales** é uma plataforma de doações com estrutura de marketing multiní
 
 ## 🛠️ Tecnologias Utilizadas
 - **Backend:** .NET Core
-- **Frontend:** React
-- **Banco de Dados:** SQL Server / PostgreSQL
+- **Frontend:** React + React Bootstrap
+- **Banco de Dados:** PostgreSQL
 - **Integrações:** Gateways de pagamento (Cartão, Boleto, PIX)
 - **Tarefas Agendadas:** Verificação automática de pagamentos
 

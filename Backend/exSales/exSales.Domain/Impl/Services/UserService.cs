@@ -11,17 +11,23 @@ using Newtonsoft.Json;
 using exSales.Domain.Impl.Models;
 using exSales.DTO.MailerSend;
 using System.Threading.Tasks;
+using Core.Domain;
+using System.Reflection;
 
 namespace exSales.Domain.Impl.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserDomainFactory _userFactory;
+        private readonly IUserPhoneDomainFactory _phoneFactory;
+        private readonly IUserAddressDomainFactory _addrFactory;
         private readonly IMailerSendService _mailerSendService;
 
-        public UserService(IUserDomainFactory userFactory, IMailerSendService mailerSendService)
+        public UserService(IUserDomainFactory userFactory, IUserPhoneDomainFactory phoneFactory, IUserAddressDomainFactory addrFactory, IMailerSendService mailerSendService)
         {
             _userFactory = userFactory;
+            _phoneFactory = phoneFactory;
+            _addrFactory = addrFactory;
             _mailerSendService = mailerSendService;
         }
 
@@ -51,7 +57,7 @@ namespace exSales.Domain.Impl.Services
             {
                 throw new Exception("User not found");
             }
-            md.ChangePassword(user.Id, newPassword, _userFactory);
+            md.ChangePassword(user.UserId, newPassword, _userFactory);
         }
 
         public void ChangePassword(long userId, string oldPassword, string newPassword)
@@ -83,7 +89,7 @@ namespace exSales.Domain.Impl.Services
                     throw new Exception("Email or password is wrong");
                 }
             }
-            md.ChangePassword(user.Id, newPassword, _userFactory);
+            md.ChangePassword(user.UserId, newPassword, _userFactory);
         }
 
         public async Task<bool> SendRecoveryEmail(string email)
@@ -98,7 +104,7 @@ namespace exSales.Domain.Impl.Services
             {
                 throw new Exception("User not found");
             }
-            var recoveryHash = md.GenerateRecoveryHash(user.Id, _userFactory);
+            var recoveryHash = md.GenerateRecoveryHash(user.UserId, _userFactory);
             var recoveryUrl = $"https://nochainswap.org/recoverypassword/{recoveryHash}";
 
             var textMessage = 
@@ -141,30 +147,176 @@ namespace exSales.Domain.Impl.Services
             return await Task.FromResult(true);
         }
 
+        private string GenerateSlug(IUserModel md)
+        {
+            string newSlug;
+            int c = 0;
+            do
+            {
+                newSlug = SlugHelper.GerarSlug((!string.IsNullOrEmpty(md.Slug)) ? md.Slug : md.Name);
+                if (c > 0)
+                {
+                    newSlug += c.ToString();
+                }
+                c++;
+            } while (md.ExistSlug(md.UserId, newSlug));
+            return newSlug;
+        }
+
+        private void InsertPhones(UserInfo user)
+        {
+            if (user.Phones != null && user.Phones.Count() > 0)
+            {
+                foreach (var phone in user.Phones)
+                {
+                    var modelPhone = _phoneFactory.BuildUserPhoneModel();
+                    modelPhone.UserId = user.UserId;
+                    modelPhone.Phone = phone.Phone;
+                    modelPhone.Insert(_phoneFactory);
+                }
+            }
+        }
+
+        private void InsertAddresses(UserInfo user)
+        {
+            if (user.Addresses != null && user.Addresses.Count() > 0)
+            {
+                foreach (var addr in user.Addresses)
+                {
+                    var modelAddr = _addrFactory.BuildUserAddressModel();
+                    modelAddr.UserId = user.UserId;
+                    modelAddr.ZipCode = addr.ZipCode;
+                    modelAddr.Address = addr.Address;
+                    modelAddr.Complement = addr.Complement;
+                    modelAddr.Neighborhood = addr.Neighborhood;
+                    modelAddr.City = addr.City;
+                    modelAddr.State = addr.State;
+                    modelAddr.Insert(_addrFactory);
+                }
+            }
+        }
+
+        private void ValidatePhones(UserInfo user)
+        {
+            if (user.Phones == null)
+            {
+                return;
+            }
+            foreach (var phone in user.Phones)
+            {
+                if (string.IsNullOrEmpty(phone.Phone))
+                {
+                    throw new Exception($"Phone is empty");
+                }
+                else
+                {
+                    phone.Phone = StringUtils.OnlyNumbers(phone.Phone.Trim());
+                    if (string.IsNullOrEmpty(phone.Phone))
+                    {
+                        throw new Exception($"{phone.Phone} is not a valid phone");
+                    }
+                }
+            }
+        }
+
+        private void ValidateAddresses(UserInfo user) {
+            if (user.Addresses == null)
+            {
+                return;
+            }
+            foreach (var addr in user.Addresses)
+            {
+                if (string.IsNullOrEmpty(addr.ZipCode))
+                {
+                    throw new Exception($"ZipCode is empty");
+                }
+                else
+                {
+                    addr.ZipCode = StringUtils.OnlyNumbers(addr.ZipCode);
+                    if (string.IsNullOrEmpty(addr.ZipCode))
+                    {
+                        throw new Exception($"{addr.ZipCode} is not a valid zip code");
+                    }
+                }
+                if (string.IsNullOrEmpty(addr.Address))
+                {
+                    throw new Exception("Address is empty");
+                }
+                if (string.IsNullOrEmpty(addr.Complement))
+                {
+                    throw new Exception("Address is empty");
+                }
+                if (string.IsNullOrEmpty(addr.Neighborhood))
+                {
+                    throw new Exception("Neighborhood is empty");
+                }
+                if (string.IsNullOrEmpty(addr.City))
+                {
+                    throw new Exception("City is empty");
+                }
+                if (string.IsNullOrEmpty(addr.State))
+                {
+                    throw new Exception("State is empty");
+                }
+            }
+        }
+
         public IUserModel Insert(UserInfo user)
         {
             var model = _userFactory.BuildUserModel();
-            if (!string.IsNullOrEmpty(user.Email))
+            if (string.IsNullOrEmpty(user.Name))
             {
+                throw new Exception("Name is empty");
+            }
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                throw new Exception("Email is empty");
+            }
+            else
+            {
+                if (!EmailValidator.IsValidEmail(user.Email))
+                {
+                    throw new Exception("Email is not valid");
+                }
                 var userWithEmail = model.GetByEmail(user.Email, _userFactory);
                 if (userWithEmail != null)
                 {
                     throw new Exception("User with email already registered");
                 }
             }
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                throw new Exception("Password is empty");
+            }
+            if (!string.IsNullOrEmpty(user.IdDocument))
+            {
+                user.IdDocument = StringUtils.OnlyNumbers(user.IdDocument);
+                if (!DocumentoUtils.ValidarCpfOuCnpj(user.IdDocument))
+                {
+                    throw new Exception($"{user.IdDocument} is not a valid CPF or CNPJ");
+                }
+            }
+            ValidatePhones(user);
+            ValidateAddresses(user);
 
+            model.Slug = user.Slug;
             model.Name = user.Name;
             model.Email = user.Email;
+            model.BirthDate = user.BirthDate;
+            model.IdDocument = user.IdDocument;
+            model.PixKey = user.PixKey;
             model.CreatedAt = DateTime.Now;
             model.UpdatedAt = DateTime.Now;
             model.Hash = GetUniqueToken();
+            model.Slug = GenerateSlug(model);
 
-            var md = model.Save(_userFactory);
-            if (string.IsNullOrEmpty(md.Name))
-            {
-                md.Name = string.Format("Anonymous {0}", md.Id);
-                md.Save(_userFactory);
-            }
+            var md = model.Insert(_userFactory);
+
+            user.UserId = md.UserId;
+            InsertPhones(user);
+            InsertAddresses(user);
+
+            md.ChangePassword(user.UserId, user.Password, _userFactory);
 
             return model;
         }
@@ -172,27 +324,65 @@ namespace exSales.Domain.Impl.Services
         public IUserModel Update(UserInfo user)
         {
             IUserModel model = null;
-            if (!(user.Id > 0))
+            if (!(user.UserId > 0))
             {
                 throw new Exception("User not found");
             }
-            model = _userFactory.BuildUserModel().GetById(user.Id, _userFactory);
+            if (string.IsNullOrEmpty(user.Name))
+            {
+                throw new Exception("Name is empty");
+            }
+            model = _userFactory.BuildUserModel().GetById(user.UserId, _userFactory);
             if (model == null)
             {
                 throw new Exception("User not exists");
             }
-            if (!string.IsNullOrEmpty(user.Email))
+            if (string.IsNullOrEmpty(user.Email))
             {
+                throw new Exception("Email is empty");
+            }
+            else
+            {
+                if (!EmailValidator.IsValidEmail(user.Email))
+                {
+                    throw new Exception("Email is not valid");
+                }
                 var userWithEmail = model.GetByEmail(user.Email, _userFactory);
-                if (userWithEmail != null && userWithEmail.Id != model.Id)
+                if (userWithEmail != null && userWithEmail.UserId != model.UserId)
                 {
                     throw new Exception("User with email already registered");
                 }
             }
+            if (!string.IsNullOrEmpty(user.IdDocument))
+            {
+                user.IdDocument = StringUtils.OnlyNumbers(user.IdDocument);
+                if (!DocumentoUtils.ValidarCpfOuCnpj(user.IdDocument))
+                {
+                    throw new Exception($"{user.IdDocument} is not a valid CPF or CNPJ");
+                }
+            }
+            ValidatePhones(user);
+            ValidateAddresses(user);
+
+            model.Slug = user.Slug;
             model.Name = user.Name;
             model.Email = user.Email;
+            model.BirthDate = user.BirthDate;
+            model.IdDocument = user.IdDocument;
+            model.PixKey = user.PixKey;
             model.UpdatedAt = DateTime.Now;
+            model.Slug = GenerateSlug(model);
+
             model.Update(_userFactory);
+
+            var modelPhone = _phoneFactory.BuildUserPhoneModel();
+            modelPhone.DeleteAllByUser(model.UserId);
+            InsertPhones(user);
+
+            var modelAddr = _addrFactory.BuildUserAddressModel();
+            modelAddr.DeleteAllByUser(model.UserId);
+            InsertAddresses(user);
+
             return model;
         }
 
@@ -235,6 +425,44 @@ namespace exSales.Domain.Impl.Services
             }
             return null;
         }
+
+        public UserInfo GetUserInfoFromModel(IUserModel md)
+        {
+            if (md == null)
+                return null;
+            return new UserInfo
+            {
+                UserId = md.UserId,
+                Hash = md.Hash,
+                Slug = md.Slug,
+                Name = md.Name,
+                Email = md.Email,
+                IdDocument = md.IdDocument,
+                PixKey = md.PixKey,
+                BirthDate = md.BirthDate,
+                CreatedAt = md.CreatedAt,
+                UpdatedAt = md.UpdatedAt,
+                IsAdmin = md.IsAdmin,
+                Phones = _phoneFactory.BuildUserPhoneModel()
+                    .ListByUser(md.UserId, _phoneFactory)
+                    .Select(x => new UserPhoneInfo
+                    {
+                        Phone = x.Phone
+                    }).ToList(),
+                Addresses = _addrFactory.BuildUserAddressModel()
+                    .ListByUser(md.UserId, _addrFactory)
+                    .Select(x => new UserAddressInfo
+                    {
+                        ZipCode = x.ZipCode,
+                        Address = x.Address,
+                        Complement = x.Complement,
+                        Neighborhood = x.Neighborhood,
+                        City = x.City,
+                        State = x.State
+                    }).ToList()
+            };
+        }
+
         private string GetUniqueToken()
         {
             using (var crypto = new RNGCryptoServiceProvider())
@@ -274,11 +502,6 @@ namespace exSales.Domain.Impl.Services
 
                 return new string(result);
             }
-        }
-
-        public IEnumerable<IUserModel> GetAllUserAddress()
-        {
-            return _userFactory.BuildUserModel().ListAllUsers(_userFactory);
         }
     }
 }

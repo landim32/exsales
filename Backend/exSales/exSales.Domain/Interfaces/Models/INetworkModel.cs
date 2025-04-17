@@ -11,7 +11,7 @@ namespace exSales.Domain.Interfaces.Models
     public interface INetworkModel
     {
         long NetworkId { get; set; }
-
+        string Slug { get; set; }
         string Name { get; set; }
 
         string Email { get; set; }

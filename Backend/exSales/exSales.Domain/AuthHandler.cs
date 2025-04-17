@@ -55,6 +55,9 @@ namespace exSales.Domain
                     return AuthenticateResult.Fail("Missing Authorization Token");
                 }
                 user = _userService.GetUserByToken(token);
+                if (user == null) {
+                    return AuthenticateResult.Fail("Invalid Session");
+                }
                 /*
                 var masterKey = authHeader.Parameter;
                 if(masterKey == "masterkeydoamor")
@@ -90,7 +93,7 @@ namespace exSales.Domain
             
             var claims = new[] {
                 new Claim("UserInfo",  JsonConvert.SerializeObject(new UserInfo() {
-                     Id = user.Id,
+                     UserId = user.UserId,
                      Hash = user.Hash,
                      Name = user.Name,
                      Email = user.Email,

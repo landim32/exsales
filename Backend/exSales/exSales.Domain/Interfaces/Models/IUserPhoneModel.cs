@@ -16,8 +16,7 @@ namespace exSales.Domain.Interfaces.Models
         string Phone { get; set; }
 
         IEnumerable<IUserPhoneModel> ListByUser(long userId, IUserPhoneDomainFactory factory);
-        IUserPhoneModel Insert(IUserPhoneModel model, IUserPhoneDomainFactory factory);
-        IUserPhoneModel Update(IUserPhoneModel model, IUserPhoneDomainFactory factory);
-        void Delete(long phoneId);
+        IUserPhoneModel Insert(IUserPhoneDomainFactory factory);
+        void DeleteAllByUser(long userId);
     }
 }

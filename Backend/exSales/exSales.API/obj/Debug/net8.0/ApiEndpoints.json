@@ -1,36 +1,5 @@
 [
   {
-    "ContainingType": "exSales.API.Controllers.AuthController",
-    "Method": "CheckUserRegister",
-    "RelativePath": "api/Auth/checkUserRegister/{chainId}/{address}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "chainId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "address",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "exSales.DTO.User.UserResult",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
     "ContainingType": "exSales.API.Controllers.UserController",
     "Method": "ChangePassword",
     "RelativePath": "api/User/changepassword",
@@ -73,37 +42,6 @@
     "ReturnTypes": [
       {
         "Type": "exSales.DTO.Domain.StatusResult",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "exSales.API.Controllers.UserController",
-    "Method": "GetByAddress",
-    "RelativePath": "api/User/getbyaddress/{chainId}/{address}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "chainId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "address",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "exSales.DTO.User.UserResult",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -187,37 +125,6 @@
   },
   {
     "ContainingType": "exSales.API.Controllers.UserController",
-    "Method": "GetTokenUnauthorized",
-    "RelativePath": "api/User/gettokenunauthorized/{chainId}/{address}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "chainId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "address",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "exSales.DTO.User.UserTokenResult",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "exSales.API.Controllers.UserController",
     "Method": "HasPassword",
     "RelativePath": "api/User/haspassword",
     "HttpMethod": "GET",
@@ -245,8 +152,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "param",
-        "Type": "exSales.API.DTO.UserParam",
+        "Name": "user",
+        "Type": "exSales.DTO.User.UserInfo",
         "IsRequired": true
       }
     ],
@@ -323,8 +230,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "param",
-        "Type": "exSales.API.DTO.UserParam",
+        "Name": "user",
+        "Type": "exSales.DTO.User.UserInfo",
         "IsRequired": true
       }
     ],

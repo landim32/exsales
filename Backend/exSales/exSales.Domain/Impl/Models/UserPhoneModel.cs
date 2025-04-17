@@ -25,24 +25,19 @@ namespace exSales.Domain.Impl.Models
         public long UserId { get; set; }
         public string Phone { get; set; }
 
-        public void Delete(long phoneId)
+        public void DeleteAllByUser(long userId)
         {
-            _repositoryPhone.Delete(phoneId);
+            _repositoryPhone.DeleteAllByUser(userId);
         }
 
-        public IUserPhoneModel Insert(IUserPhoneModel model, IUserPhoneDomainFactory factory)
+        public IUserPhoneModel Insert(IUserPhoneDomainFactory factory)
         {
-            return _repositoryPhone.Insert(model, factory);
+            return _repositoryPhone.Insert(this, factory);
         }
 
         public IEnumerable<IUserPhoneModel> ListByUser(long userId, IUserPhoneDomainFactory factory)
         {
-            return _repositoryPhone.ListByUser(userId, factory);
-        }
-
-        public IUserPhoneModel Update(IUserPhoneModel model, IUserPhoneDomainFactory factory)
-        {
-            return _repositoryPhone.Update(model, factory);
+            return _repositoryPhone.ListByUser(userId, factory).ToList();
         }
     }
 }

@@ -19,9 +19,10 @@ namespace exSales.Domain.Impl.Models
             _repositoryUser = repositoryUser;
         }
 
-        public long Id { get; set; }
+        public long UserId { get; set; }
         public string Hash { get; set; }
         public string Token { get; set; }
+        public string Slug { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string IdDocument { get; set; }
@@ -55,22 +56,13 @@ namespace exSales.Domain.Impl.Models
         public string GenerateNewToken(IUserDomainFactory factory)
         {
             var token = CreateMD5(Guid.NewGuid().ToString());
-            _repositoryUser.UpdateToken(this.Id, token);
+            _repositoryUser.UpdateToken(this.UserId, token);
             return token;
         }
 
-        public IUserModel Save(IUserDomainFactory factory)
+        public IUserModel Insert(IUserDomainFactory factory)
         {
-            IUserModel ret = null;
-            if (this.Id > 0)
-            {
-                ret = _repositoryUser.Update(this, factory);
-            }
-            else
-            {
-                ret = _repositoryUser.Insert(this, factory);
-            }
-            return ret;
+            return _repositoryUser.Insert(this, factory);
         }
 
         public IUserModel Update(IUserDomainFactory factory)
@@ -133,7 +125,7 @@ namespace exSales.Domain.Impl.Models
                 throw new Exception("User not found");
             }
             string encryptPwd = CreateMD5(user.Hash + "|" + password);
-            _repositoryUser.ChangePassword(user.Id, encryptPwd);
+            _repositoryUser.ChangePassword(user.UserId, encryptPwd);
         }
 
         public string GenerateRecoveryHash(long userId, IUserDomainFactory factory)
@@ -146,6 +138,10 @@ namespace exSales.Domain.Impl.Models
             string recoveryHash = CreateMD5(user.Hash + "|" + Guid.NewGuid().ToString());
             _repositoryUser.UpdateRecoveryHash(userId, recoveryHash);
             return recoveryHash;
+        }
+
+        public bool ExistSlug(long userId, string slug) { 
+            return _repositoryUser.ExistSlug(userId, slug);
         }
     }
 }

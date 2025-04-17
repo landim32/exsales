@@ -17,5 +17,6 @@ namespace Core.Domain.Repository
         void UpdateRecoveryHash(long userId, string recoveryHash);
         void ChangePassword(long userId, string encryptPwd);
         bool HasPassword(long userId, TFactory factory);
+        bool ExistSlug(long userId, string slug);
     }
 }

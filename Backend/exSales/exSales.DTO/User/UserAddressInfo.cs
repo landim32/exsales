@@ -9,15 +9,17 @@ namespace exSales.DTO.User
 {
     public class UserAddressInfo
     {
-        [JsonPropertyName("id")]
-        public long Id { get; set; }
-        [JsonPropertyName("chainId")]
-        public int ChainId { get; set; }
-        [JsonPropertyName("createAt")]
-        public DateTime CreateAt { get; set; }
-        [JsonPropertyName("updateAt")]
-        public DateTime UpdateAt { get; set; }
+        [JsonPropertyName("zipCode")]
+        public string ZipCode { get; set; }
         [JsonPropertyName("address")]
         public string Address { get; set; }
+        [JsonPropertyName("complement")]
+        public string Complement { get; set; }
+        [JsonPropertyName("neighborhood")]
+        public string Neighborhood { get; set; }
+        [JsonPropertyName("city")]
+        public string City { get; set; }
+        [JsonPropertyName("state")]
+        public string State { get; set; }
     }
 }

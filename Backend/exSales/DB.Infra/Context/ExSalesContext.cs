@@ -94,6 +94,13 @@ public partial class ExSalesContext : DbContext
                 .IsRequired()
                 .HasMaxLength(80)
                 .HasColumnName("name");
+            entity.Property(e => e.Plan)
+                .HasDefaultValue(1)
+                .HasColumnName("plan");
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("slug");
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)
                 .HasColumnName("status");
@@ -146,6 +153,10 @@ public partial class ExSalesContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.NetworkId).HasColumnName("network_id");
             entity.Property(e => e.Price).HasColumnName("price");
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(140)
+                .HasColumnName("slug");
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)
                 .HasColumnName("status");
@@ -197,6 +208,10 @@ public partial class ExSalesContext : DbContext
             entity.Property(e => e.RecoveryHash)
                 .HasMaxLength(128)
                 .HasColumnName("recovery_hash");
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(140)
+                .HasColumnName("slug");
             entity.Property(e => e.Token)
                 .HasMaxLength(128)
                 .HasColumnName("token");
@@ -207,16 +222,14 @@ public partial class ExSalesContext : DbContext
 
         modelBuilder.Entity<UserAddress>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("user_addresses");
+            entity.HasKey(e => e.AddressId).HasName("pk_user_addresses");
 
+            entity.ToTable("user_addresses");
+
+            entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.Address)
                 .HasMaxLength(150)
                 .HasColumnName("address");
-            entity.Property(e => e.AddressId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("address_id");
             entity.Property(e => e.City)
                 .HasMaxLength(120)
                 .HasColumnName("city");
@@ -234,7 +247,7 @@ public partial class ExSalesContext : DbContext
                 .HasMaxLength(15)
                 .HasColumnName("zip_code");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.UserAddresses)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_user_address");

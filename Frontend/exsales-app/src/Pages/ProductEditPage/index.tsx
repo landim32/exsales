@@ -13,8 +13,6 @@ import { Link, useNavigate } from "react-router-dom";
 import InputGroup from 'react-bootstrap/InputGroup';
 import UserContext from "../../Contexts/User/UserContext";
 import MessageToast from "../../Components/MessageToast";
-import { ChainEnum } from "../../DTO/Enum/ChainEnum";
-import UserAddressInfo from "../../DTO/Domain/UserAddressInfo";
 import Moment from 'moment';
 import { MessageToastEnum } from "../../DTO/Enum/MessageToastEnum";
 import { CustomToolbar } from "../../Components/CustomToolbar";
@@ -53,15 +51,10 @@ export default function ProductEditPage() {
 
     useEffect(() => {
         if (authContext.sessionInfo) {
-            if (authContext.sessionInfo?.id > 0) {
+            if (authContext.sessionInfo?.userId > 0) {
                 userContext.getMe().then((ret) => {
                     if (ret.sucesso) {
                         setInsertMode(false);
-                        userContext.listAddressByUser().then((retAddr) => {
-                            if (!retAddr.sucesso) {
-                                throwError(retAddr.mensagemErro);
-                            }
-                        });
                     }
                     else {
                         setInsertMode(true);

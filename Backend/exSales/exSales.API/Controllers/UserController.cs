@@ -34,49 +34,6 @@ namespace exSales.API.Controllers
             _userFactory = userFactory;
         }
 
-        private UserInfo ModelToInfo(IUserModel md)
-        {
-            var user = new UserInfo { 
-                Id = md.Id,
-                Hash = md.Hash,
-                CreatedAt = md.CreatedAt,
-                UpdatedAt = md.UpdatedAt,
-                Name = md.Name,
-                Email = md.Email,
-                IsAdmin = md.IsAdmin
-            };
-            return user;
-        }
-
-        [HttpGet("gettokenunauthorized/{chainId}/{address}")]
-        public ActionResult<UserTokenResult> GetTokenUnauthorized(int chainId, string address)
-        {
-            try
-            {
-                /*
-                var user = _userService.GetUserByAddress((ChainEnum) chainId, address);
-                if (user == null)
-                {
-                    return new UserTokenResult() { Sucesso = false, Mensagem = "User Not Found" };
-                }
-                if (user.IsAdmin)
-                {
-                    return new UserTokenResult() { Sucesso = false, Mensagem = "Cant get token for admin" };
-                }
-
-                return new UserTokenResult()
-                {
-                    Token = user.GenerateNewToken(_userFactory)
-                };
-                */
-                return null;
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [HttpPost("gettokenauthorized")]
         public ActionResult<UserTokenResult> GetTokenAuthorized([FromBody] LoginParam login)
         {
@@ -109,7 +66,7 @@ namespace exSales.API.Controllers
                 {
                     return StatusCode(401, "Not Authorized");
                 }
-                var user = _userService.GetUserByID(userSession.Id);
+                var user = _userService.GetUserByID(userSession.UserId);
                 if (user == null)
                 {
                     return new UserResult() { User = null, Sucesso = false, Mensagem = "User Not Found" };
@@ -117,33 +74,8 @@ namespace exSales.API.Controllers
 
                 return new UserResult()
                 {
-                    User = ModelToInfo(user)
+                    User = _userService.GetUserInfoFromModel(user)
                 };
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet("getbyaddress/{chainId}/{address}")]
-        public ActionResult<UserResult> GetByAddress(int chainId, string address)
-        {
-            try
-            {
-                /*
-                var user = _userService.GetUserByAddress((ChainEnum)chainId, address);
-                if (user == null)
-                {
-                    return new UserResult() { User = null, Sucesso = false, Mensagem = "Address Not Found" };
-                }
-
-                return new UserResult()
-                {
-                    User = ModelToInfo(user)
-                };
-                */
-                return null;
             }
             catch (Exception ex)
             {
@@ -163,7 +95,7 @@ namespace exSales.API.Controllers
                 }
                 return new UserResult()
                 {
-                    User = ModelToInfo(user)
+                    User = _userService.GetUserInfoFromModel(user)
                 };
             }
             catch (Exception ex)
@@ -173,24 +105,20 @@ namespace exSales.API.Controllers
         }
 
         [HttpPost("insert")]
-        public ActionResult<UserResult> Insert([FromBody] UserParam param)
+        public ActionResult<UserResult> Insert([FromBody] UserInfo user)
         {
             try
             {
                 //if(String.IsNullOrEmpty(param.Address))
                 //    return StatusCode(400, "Address is empty");
-                if (param == null)
+                if (user == null)
                 {
                     return new UserResult() { User = null, Sucesso = false, Mensagem = "User is empty" };
                 }
-                var user = _userService.Insert(new UserInfo
-                {
-                    Name = param.Name,
-                    Email = param.Email
-                });
+                var newUser = _userService.Insert(user);
                 return new UserResult()
                 {
-                    User = ModelToInfo(user)
+                    User = _userService.GetUserInfoFromModel(newUser)
                 };
             }
             catch (Exception ex)
@@ -201,11 +129,11 @@ namespace exSales.API.Controllers
 
         [Authorize]
         [HttpPost("update")]
-        public ActionResult<UserResult> Update(UserParam param)
+        public ActionResult<UserResult> Update([FromBody] UserInfo user)
         {
             try
             {
-                if (param == null)
+                if (user == null)
                 {
                     return new UserResult() { User = null, Sucesso = false, Mensagem = "User is empty" };
                 }
@@ -214,20 +142,15 @@ namespace exSales.API.Controllers
                 {
                     return StatusCode(401, "Not Authorized");
                 }
-                if (userSession.Id != param.Id)
+                if (userSession.UserId != user.UserId)
                 {
                     throw new Exception("Only can update your user");
                 }
 
-                var user = _userService.Update(new UserInfo
-                {
-                    Id = param.Id,
-                    Name = param.Name,
-                    Email = param.Email,
-                });
+                var updatedUser = _userService.Update(user);
                 return new UserResult()
                 {
-                    User = ModelToInfo(user)
+                    User = _userService.GetUserInfoFromModel(updatedUser)
                 };
             }
             catch (Exception ex)
@@ -248,7 +171,7 @@ namespace exSales.API.Controllers
                 }
                 return new UserResult()
                 {
-                    User = ModelToInfo(user)
+                    User = _userService.GetUserInfoFromModel(user)
                 };
             }
             catch (Exception ex)
@@ -268,14 +191,14 @@ namespace exSales.API.Controllers
                 {
                     return StatusCode(401, "Not Authorized");
                 }
-                var user = _userService.GetUserByID(userSession.Id);
+                var user = _userService.GetUserByID(userSession.UserId);
                 if (user == null)
                 {
                     return new UserResult() { User = null, Sucesso = false, Mensagem = "User Not Found" };
                 }
                 return new StatusResult
                 {
-                    Sucesso = _userService.HasPassword(user.Id),
+                    Sucesso = _userService.HasPassword(user.UserId),
                     Mensagem = "Password verify successfully"
                 };
             }
@@ -296,12 +219,12 @@ namespace exSales.API.Controllers
                 {
                     return StatusCode(401, "Not Authorized");
                 }
-                var user = _userService.GetUserByID(userSession.Id);
+                var user = _userService.GetUserByID(userSession.UserId);
                 if (user == null)
                 {
                     return new UserResult() { User = null, Sucesso = false, Mensagem = "Email or password is wrong" };
                 }
-                _userService.ChangePassword(user.Id, param.OldPassword, param.NewPassword);
+                _userService.ChangePassword(user.UserId, param.OldPassword, param.NewPassword);
                 return new StatusResult
                 {
                     Sucesso = true,

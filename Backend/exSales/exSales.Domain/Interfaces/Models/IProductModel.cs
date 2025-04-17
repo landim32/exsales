@@ -13,7 +13,7 @@ namespace exSales.Domain.Interfaces.Models
         long ProductId { get; set; }
 
         long NetworkId { get; set; }
-
+        string Slug { get; set; }
         string Name { get; set; }
 
         double Price { get; set; }

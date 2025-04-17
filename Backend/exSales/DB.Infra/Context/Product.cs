@@ -19,6 +19,8 @@ public partial class Product
 
     public int Status { get; set; }
 
+    public string Slug { get; set; }
+
     public virtual Network Network { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

@@ -26,8 +26,7 @@ namespace exSales.Domain.Interfaces.Models
         string State { get; set; }
 
         IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory);
-        IUserAddressModel Insert(IUserAddressModel model, IUserAddressDomainFactory factory);
-        IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory);
-        void Delete(long addressId);
+        IUserAddressModel Insert(IUserAddressDomainFactory factory);
+        void DeleteAllByUser(long userId);
     }
 }

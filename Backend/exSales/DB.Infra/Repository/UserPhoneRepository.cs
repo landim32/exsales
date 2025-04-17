@@ -47,29 +47,21 @@ namespace DB.Infra.Repository
             return model;
         }
 
-        public IUserPhoneModel Update(IUserPhoneModel model, IUserPhoneDomainFactory factory)
+        public void DeleteAllByUser(long userId)
         {
-            var row = _ccsContext.UserPhones.Find(model.PhoneId);
-            ModelToDb(model, row);
-            _ccsContext.UserPhones.Update(row);
-            _ccsContext.SaveChanges();
-            return model;
-        }
-
-        public void Delete(long phoneId)
-        {
-            var row = _ccsContext.UserPhones.Find(phoneId);
-            if (row == null)
+            var rows = _ccsContext.UserPhones.Where(x => x.UserId == userId).ToList();
+            if (rows.Count() == 0)
                 return;
-            _ccsContext.UserPhones.Remove(row);
+            _ccsContext.UserPhones.RemoveRange(rows);
             _ccsContext.SaveChanges();
         }
 
         public IEnumerable<IUserPhoneModel> ListByUser(long userId, IUserPhoneDomainFactory factory)
         {
-            return _ccsContext.UserPhones
+            var phones = _ccsContext.UserPhones
                 .Where(x => x.UserId == userId)
-                .Select(x => DbToModel(factory, x));
+                .ToList();
+            return phones.Select(x => DbToModel(factory, x));
         }
     }
 }

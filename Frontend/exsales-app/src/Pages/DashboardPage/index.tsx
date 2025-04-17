@@ -6,7 +6,7 @@ import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/esm/Card";
 import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWarning, faPlus, faBurn, faFire, faSearch, faDollar, faClock, faBoltLightning, faLock, faFileUpload, faCalendar, faCalendarAlt, faFileWord, faBoxOpen, faSign, faLockOpen, faUserDoctor, faChartLine, faChartPie, faCoins, faArrowRight, faUserGroup, faBox, faCog, faCogs, faUserCog, faList } from '@fortawesome/free-solid-svg-icons';
+import { faWarning, faPlus, faBurn, faFire, faSearch, faDollar, faClock, faBoltLightning, faLock, faFileUpload, faCalendar, faCalendarAlt, faFileWord, faBoxOpen, faSign, faLockOpen, faUserDoctor, faChartLine, faChartPie, faCoins, faArrowRight, faUserGroup, faBox, faCog, faCogs, faUserCog, faList, faUser } from '@fortawesome/free-solid-svg-icons';
 import Button from "react-bootstrap/esm/Button";
 import { useNavigate } from "react-router-dom";
 import { faBitcoin, faOpencart } from "@fortawesome/free-brands-svg-icons";
@@ -39,12 +39,12 @@ export default function DashboardPage() {
                                     <div className="d-inline-flex align-items-center" style={{ minHeight: "128px" }}>
                                         <div className="me-2">
                                             <div className="bg-light p-3 rounded-circle">
-                                                <FontAwesomeIcon icon={faArrowRight} fixedWidth size="2x" />
+                                                <FontAwesomeIcon icon={faBox} fixedWidth size="2x" />
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="fw-bold display-5 mb-5">0</span>
-                                            <p className="lead"><span><b>Projects</b></span> Done</p>
+                                            <span className="fw-bold display-5 mb-5">7</span>
+                                            <p className="lead"><span><b>Sales</b></span> Done</p>
                                         </div>
                                     </div>
                                 </div>
@@ -54,12 +54,12 @@ export default function DashboardPage() {
                                     <div className="d-inline-flex align-items-center" style={{ minHeight: "128px" }}>
                                         <div className="me-2">
                                             <div className="bg-light p-3 rounded-circle">
-                                                <FontAwesomeIcon icon={faArrowRight} fixedWidth size="2x" />
+                                                <FontAwesomeIcon icon={faUser} fixedWidth size="2x" />
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="fw-bold display-5 mb-5">0</span>
-                                            <p className="lead"><b>Customers</b> Satisfied</p>
+                                            <span className="fw-bold display-5 mb-5">6</span>
+                                            <p className="lead"><b>Customers</b> Added</p>
                                         </div>
                                     </div>
                                 </div>
@@ -69,12 +69,12 @@ export default function DashboardPage() {
                                     <div className="d-inline-flex align-items-center" style={{ minHeight: "128px" }}>
                                         <div className="me-2">
                                             <div className="bg-light p-3 rounded-circle">
-                                                <FontAwesomeIcon icon={faArrowRight} fixedWidth size="2x" />
+                                                <FontAwesomeIcon icon={faDollar} fixedWidth size="2x" />
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="fw-bold display-5 mb-5">0</span>
-                                            <p className="lead"><b>Employees</b> in the World</p>
+                                            <span className="fw-bold display-5 mb-5">15</span>
+                                            <p className="lead"><b>Paid</b> invoices</p>
                                         </div>
                                     </div>
                                 </div>

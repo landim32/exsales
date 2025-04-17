@@ -13,8 +13,6 @@ import { Link, useNavigate } from "react-router-dom";
 import InputGroup from 'react-bootstrap/InputGroup';
 import UserContext from "../../Contexts/User/UserContext";
 import MessageToast from "../../Components/MessageToast";
-import { ChainEnum } from "../../DTO/Enum/ChainEnum";
-import UserAddressInfo from "../../DTO/Domain/UserAddressInfo";
 import Moment from 'moment';
 import { MessageToastEnum } from "../../DTO/Enum/MessageToastEnum";
 
@@ -28,6 +26,8 @@ export default function UserPage() {
     const [dialog, setDialog] = useState<MessageToastEnum>(MessageToastEnum.Error);
     const [showMessage, setShowMessage] = useState<boolean>(false);
     const [messageText, setMessageText] = useState<string>("");
+
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
 
     let navigate = useNavigate();
     Moment.locale('en');
@@ -43,43 +43,13 @@ export default function UserPage() {
         setShowMessage(true);
     };
 
-    const chainToStr = (chain: ChainEnum) => {
-        switch (chain) {
-            case ChainEnum.NoChain:
-                return (
-                    <>
-                        <FontAwesomeIcon icon={faCancel} fixedWidth /> No Chain
-                    </>
-                );
-                break;
-            case ChainEnum.BitcoinAndStack:
-                return (
-                    <>
-                        <FontAwesomeIcon icon={faBitcoinSign} fixedWidth /> Bitcoin & Stack
-                    </>
-                );
-                break;
-            case ChainEnum.BNBChain:
-                return (
-                    <>
-                        <FontAwesomeIcon icon={faEthernet} fixedWidth /> BNB Chain
-                    </>
-                );
-                break;
-        }
-    };
-
     useEffect(() => {
+        //alert(JSON.stringify(authContext.sessionInfo));
         if (authContext.sessionInfo) {
-            if (authContext.sessionInfo?.id > 0) {
+            if (authContext.sessionInfo?.userId > 0) {
                 userContext.getMe().then((ret) => {
                     if (ret.sucesso) {
                         setInsertMode(false);
-                        userContext.listAddressByUser().then((retAddr) => {
-                            if (!retAddr.sucesso) {
-                                throwError(retAddr.mensagemErro);
-                            }
-                        });
                     }
                     else {
                         setInsertMode(true);
@@ -163,6 +133,41 @@ export default function UserPage() {
                                             </InputGroup>
                                         </Col>
                                     </Form.Group>
+                                    {insertMode &&
+                                    <>
+                                        <Form.Group as={Row} className="mb-3">
+                                            <Form.Label column sm="2">Password:</Form.Label>
+                                            <Col sm="10">
+                                                <InputGroup>
+                                                    <InputGroup.Text><FontAwesomeIcon icon={faLock} fixedWidth /></InputGroup.Text>
+                                                    <Form.Control type="password" size="lg"
+                                                        placeholder="Your password"
+                                                        value={userContext.user?.password}
+                                                        onChange={(e) => {
+                                                            userContext.setUser({
+                                                                ...userContext.user,
+                                                                password: e.target.value
+                                                            });
+                                                        }} />
+                                                </InputGroup>
+                                            </Col>
+                                        </Form.Group>
+                                        <Form.Group as={Row} className="mb-3">
+                                            <Form.Label column sm="2">Confirm:</Form.Label>
+                                            <Col sm="10">
+                                                <InputGroup>
+                                                    <InputGroup.Text><FontAwesomeIcon icon={faLock} fixedWidth /></InputGroup.Text>
+                                                    <Form.Control type="password" size="lg"
+                                                        placeholder="Confirm your password"
+                                                        value={confirmPassword}
+                                                        onChange={(e) => {
+                                                            setConfirmPassword(e.target.value);
+                                                        }} />
+                                                </InputGroup>
+                                            </Col>
+                                        </Form.Group>
+                                        </>
+                                    }
                                     {!insertMode &&
                                         <Form.Group as={Row} className="mb-3">
                                             <Form.Label column sm="2">Create At:</Form.Label>
@@ -183,58 +188,16 @@ export default function UserPage() {
                                             </Col>
                                         </Form.Group>
                                     }
-                                    {!insertMode &&
-                                        <>
-                                            <hr />
-                                            <Table striped bordered hover size="lg">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Chain</th>
-                                                        <th scope="col">Address</th>
-                                                        <th scope="col" style={{ textAlign: "center" }}>-</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {userContext.loadingUserAddr &&
-                                                        <tr>
-                                                            <td colSpan={5}>
-                                                                <div className="d-flex justify-content-center">
-                                                                    <div className="spinner-border" role="status">
-                                                                        <span className="visually-hidden">Loading...</span>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                    {userContext.userAddresses && userContext.userAddresses.map((addr: UserAddressInfo) => {
-                                                        return (
-                                                            <tr>
-                                                                <td scope="col" style={{ whiteSpace: "nowrap" }}>
-                                                                    {chainToStr(addr.chainId)}
-                                                                </td>
-                                                                <td scope="col">{addr.address}</td>
-                                                                <td scope="col" style={{ textAlign: "center" }}>
-                                                                    <a href="#" onClick={async (e) => {
-                                                                        e.preventDefault();
-                                                                        let ret = await userContext.removeAddress(addr.chainId);
-                                                                        if (!ret.sucesso) {
-                                                                            throwError(ret.mensagemErro);
-                                                                        }
-                                                                    }}><FontAwesomeIcon icon={faTrash} fixedWidth /></a>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })}
-                                                </tbody>
-                                            </Table>
-                                        </>
-                                    }
                                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                                         <Button variant="danger" size="lg" onClick={() => {
                                             navigate("/login");
                                         }}><FontAwesomeIcon icon={faSignInAlt} fixedWidth /> Sign In</Button>
                                         <Button variant="success" size="lg" onClick={async (e) => {
                                             if (insertMode) {
+                                                if (userContext.user?.password != confirmPassword) {
+                                                    throwError("Password and confirmation are different");
+                                                    return;
+                                                }
                                                 let ret = await userContext.insert(userContext.user);
                                                 if (ret.sucesso) {
                                                     showSuccessMessage(ret.mensagemSucesso);

@@ -30,24 +30,19 @@ namespace exSales.Domain.Impl.Models
         public string City { get; set; }
         public string State { get; set; }
 
-        public void Delete(long addressId)
+        public void DeleteAllByUser(long userId)
         {
-            _repositoryAddr.Delete(addressId);
+            _repositoryAddr.DeleteAllByUser(userId);
         }
 
-        public IUserAddressModel Insert(IUserAddressModel model, IUserAddressDomainFactory factory)
+        public IUserAddressModel Insert(IUserAddressDomainFactory factory)
         {
-            return _repositoryAddr.Insert(model, factory);
+            return _repositoryAddr.Insert(this, factory);
         }
 
         public IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory)
         {
-            return _repositoryAddr.ListByUser(userId, factory);
-        }
-
-        public IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory)
-        {
-            return _repositoryAddr.Update(model, factory);
+            return _repositoryAddr.ListByUser(userId, factory).ToList();
         }
     }
 }

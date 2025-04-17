@@ -22,9 +22,10 @@ namespace DB.Infra.Repository
         private IUserModel DbToModel(IUserDomainFactory factory, User u)
         {
             var md = factory.BuildUserModel();
-            md.Id = u.UserId;
+            md.UserId = u.UserId;
             md.Hash = u.Hash;
             md.Name = u.Name;
+            md.Slug = u.Slug;
             md.Email = u.Email;
             md.IsAdmin = u.IsAdmin;
             md.CreatedAt = u.CreatedAt;
@@ -34,9 +35,10 @@ namespace DB.Infra.Repository
 
         private void ModelToDb(IUserModel md, User row)
         {
-            row.UserId = md.Id;
+            row.UserId = md.UserId;
             row.Hash = md.Hash;
             row.Name = md.Name;
+            row.Slug = md.Slug;
             row.Email = md.Email;
             row.IsAdmin = md.IsAdmin;
             row.CreatedAt = md.CreatedAt;
@@ -53,7 +55,7 @@ namespace DB.Infra.Repository
 
         public IUserModel Update(IUserModel model, IUserDomainFactory factory)
         {
-            var row = _ccsContext.Users.Where(x => x.UserId == model.Id).FirstOrDefault();
+            var row = _ccsContext.Users.Where(x => x.UserId == model.UserId).FirstOrDefault();
             ModelToDb(model, row);
             row.UpdatedAt = DateTime.Now;
             _ccsContext.Users.Update(row);
@@ -70,7 +72,7 @@ namespace DB.Infra.Repository
             u.UpdatedAt = DateTime.Now;
             _ccsContext.Add(u);
             _ccsContext.SaveChanges();
-            model.Id = u.UserId;
+            model.UserId = u.UserId;
             return model;
         }
 
@@ -153,6 +155,11 @@ namespace DB.Infra.Repository
             row.Password = encryptPwd;
             _ccsContext.Users.Update(row);
             _ccsContext.SaveChanges();
+        }
+
+        public bool ExistSlug(long userId, string slug)
+        {
+            return _ccsContext.Users.Where(x => x.Slug == slug && (userId == 0 || x.UserId != userId)).Any();
         }
     }
 }

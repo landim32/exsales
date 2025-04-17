@@ -19,6 +19,10 @@ public partial class Network
 
     public int Status { get; set; }
 
+    public string Slug { get; set; }
+
+    public int Plan { get; set; }
+
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 
     public virtual ICollection<UserProfile> UserProfiles { get; set; } = new List<UserProfile>();

@@ -1,19 +1,13 @@
 import './App.css';
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import Menu from "./Components/Menu";
-import SwapForm from './Pages/SwapForm';
 import ContextBuilder from './Contexts/Utils/ContextBuilder';
 import AuthProvider from './Contexts/Auth/AuthProvider';
-import SwapProvider from './Contexts/Swap/SwapProvider';
-import ListTxPage from './Pages/ListTxPage';
-import TxProvider from './Contexts/Transaction/TxProvider';
 import UserPage from './Pages/UserPage';
 import PasswordPage from './Pages/PasswordPage';
 import LoginPage from './Pages/LoginPage';
 import RecoveryPage from './Pages/RecoveryPage';
 import UserProvider from './Contexts/User/UserProvider';
-import TxPage from './Pages/TxPage';
-import AllListTxPage from './Pages/AllListTxPage';
 import HomePage from './Pages/HomePage';
 import SellerPage from './Pages/SellerPage';
 import NetworkPage from './Pages/NetworkPage';
@@ -47,7 +41,7 @@ function Layout() {
 }
 
 function App() {
-  const ContextContainer = ContextBuilder([AuthProvider, UserProvider, SwapProvider, TxProvider]);
+  const ContextContainer = ContextBuilder([AuthProvider, UserProvider]);
 
   return (
     <ContextContainer>
@@ -85,10 +79,6 @@ function App() {
               <Route path="new" element={<TeamStructureEditPage />} />
               <Route path=":id" element={<TeamStructureEditPage />} />
             </Route>
-          </Route>
-          <Route path="my-swaps">
-            <Route index element={<ListTxPage OnlyMyTx={true} />} />
-            <Route path=":txid" element={<ListTxPage OnlyMyTx={true} />} />
           </Route>
           <Route path="*" element={<Error404 />} />
         </Route>

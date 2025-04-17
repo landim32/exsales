@@ -1,7 +1,6 @@
 import BusinessResult from "../../DTO/Business/BusinessResult";
 import AuthSession from "../../DTO/Domain/AuthSession";
 import UserInfo from "../../DTO/Domain/UserInfo";
-import { ChainEnum } from "../../DTO/Enum/ChainEnum";
 import IUserService from "../../Services/Interfaces/IUserService";
 import AuthFactory from "../Factory/AuthFactory";
 import IUserBusiness from "../Interfaces/IUserBusiness";
@@ -41,27 +40,6 @@ const UserBusiness: IUserBusiness = {
       throw new Error("Failed to get user by address");
     }
   },
-  getUserByAddress: async (chain: ChainEnum, address: string) => {
-    try {
-      let ret: BusinessResult<UserInfo>;
-      let retServ = await _userService.getUserByAddress(chain, address);
-      if (retServ.sucesso) {
-        return {
-          ...ret,
-          dataResult: retServ.user,
-          sucesso: true
-        };
-      } else {
-        return {
-          ...ret,
-          sucesso: false,
-          mensagem: retServ.mensagem
-        };
-      }
-    } catch {
-      throw new Error("Failed to get user by address");
-    }
-  },
   getUserByEmail: async (email: string) => {
     try {
       let ret: BusinessResult<UserInfo>;
@@ -81,23 +59,6 @@ const UserBusiness: IUserBusiness = {
       }
     } catch {
       throw new Error("Failed to get user by email");
-    }
-  },
-  getTokenUnauthorized: async (chainId: ChainEnum, address: string) => {
-    let ret: BusinessResult<string>;
-    let retServ = await _userService.getTokenUnauthorized(chainId, address);
-    if (retServ.sucesso) {
-      return {
-        ...ret,
-        dataResult: retServ.token,
-        sucesso: true
-      };
-    } else {
-      return {
-        ...ret,
-        sucesso: false,
-        mensagem: retServ.mensagem
-      };
     }
   },
   getTokenAuthorized: async (email: string, password: string) => {

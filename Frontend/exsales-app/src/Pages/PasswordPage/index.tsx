@@ -45,7 +45,7 @@ export default function PasswordPage() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (authContext.sessionInfo && authContext.sessionInfo?.id > 0) {
+        if (authContext.sessionInfo && authContext.sessionInfo?.userId > 0) {
             userContext.getMe().then((ret) => {
                 if (!ret.sucesso) {
                     throwError(ret.mensagemErro);

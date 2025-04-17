@@ -24,6 +24,7 @@ namespace exSales.Domain.Impl.Models
 
         public long ProductId { get; set; }
         public long NetworkId { get; set; }
+        public string Slug { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public int Frequency { get; set; }

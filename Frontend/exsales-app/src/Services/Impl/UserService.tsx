@@ -1,6 +1,4 @@
 import UserInfo from "../../DTO/Domain/UserInfo";
-import { ChainEnum } from "../../DTO/Enum/ChainEnum";
-import AuthResult from "../../DTO/Services/AuthResult";
 import StatusRequest from "../../DTO/Services/StatusRequest";
 import UserResult from "../../DTO/Services/UserResult";
 import UserTokenResult from "../../DTO/Services/UserTokenResult";
@@ -29,43 +27,10 @@ const UserService : IUserService = {
         }
         return ret;
     },
-    getUserByAddress: async (chain: ChainEnum, address: string) => {
-        let ret: UserResult;
-        let url = "/api/User/getbyaddress/" + chain + "/" + address;
-        console.log("url: ", url);
-        let request = await _httpClient.doGet<UserResult>(url, {});
-        if (request.success) {
-            return request.data;
-        }
-        else {
-            ret = {
-                mensagem: request.messageError,
-                sucesso: false,
-                ...ret
-            };
-        }
-        return ret;
-    },
     getUserByEmail: async (email: string) => {
         let ret: UserResult;
         let url = "/api/User/getbyemail/" + email;
         let request = await _httpClient.doGet<UserResult>(url, {});
-        if (request.success) {
-            return request.data;
-        }
-        else {
-            ret = {
-                mensagem: request.messageError,
-                sucesso: false,
-                ...ret
-            };
-        }
-        return ret;
-    },
-    getTokenUnauthorized: async (chainId: number, address: string) => {
-        let ret: UserTokenResult;
-        let url = "/api/User/gettokenunauthorized/" + chainId + "/" + address;
-        let request = await _httpClient.doGet<UserTokenResult>(url, {});
         if (request.success) {
             return request.data;
         }

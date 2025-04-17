@@ -56,29 +56,19 @@ namespace DB.Infra.Repository
             return model;
         }
 
-        public IUserAddressModel Update(IUserAddressModel model, IUserAddressDomainFactory factory)
+        public void DeleteAllByUser(long userId)
         {
-            var row = _ccsContext.UserAddresses.Find(model.AddressId);
-            ModelToDb(model, row);
-            _ccsContext.UserAddresses.Update(row);
-            _ccsContext.SaveChanges();
-            return model;
-        }
-
-        public void Delete(long addressId)
-        {
-            var row = _ccsContext.UserAddresses.Find(addressId);
-            if (row == null)
+            var rows = _ccsContext.UserAddresses.Where(x => x.UserId == userId);
+            if (rows.Count() == 0)
                 return;
-            _ccsContext.UserAddresses.Remove(row);
+            _ccsContext.UserAddresses.RemoveRange(rows);
             _ccsContext.SaveChanges();
         }
 
         public IEnumerable<IUserAddressModel> ListByUser(long userId, IUserAddressDomainFactory factory)
         {
-            return _ccsContext.UserAddresses
-                .Where(x => x.UserId == userId)
-                .Select(x => DbToModel(factory, x));
+            var addrs = _ccsContext.UserAddresses.Where(x => x.UserId == userId).ToList();
+            return addrs.Select(x => DbToModel(factory, x));
         }
     }
 }

@@ -31,11 +31,15 @@ public partial class User
 
     public string PixKey { get; set; }
 
+    public string Slug { get; set; }
+
     public virtual ICollection<Invoice> InvoiceSellers { get; set; } = new List<Invoice>();
 
     public virtual ICollection<Invoice> InvoiceUsers { get; set; } = new List<Invoice>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
 
     public virtual ICollection<UserDocument> UserDocuments { get; set; } = new List<UserDocument>();
 

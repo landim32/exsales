@@ -45,12 +45,19 @@ namespace MonexUp.Application
                    .UseNpgsql(BuildResilientConnectionString(connectionString), npgsql =>
                    {
                        npgsql.EnableRetryOnFailure(
-                           maxRetryCount: 5,
+                           maxRetryCount: 3,
                            maxRetryDelay: TimeSpan.FromSeconds(10),
                            errorCodesToAdd: null);
                        npgsql.CommandTimeout(30);
                    });
         }
+
+        // Teto de conexões por processo. O default do Npgsql (100) é maior que o
+        // max_connections do cluster gerenciado, então o pool tenta abrir conexões
+        // que o servidor não pode aceitar e o handshake estoura por timeout.
+        // Pode ser sobrescrito pela própria connection string ("Maximum Pool Size=N").
+        private const int DefaultMaxPoolSize = 10;
+
 
         private static string BuildResilientConnectionString(string connectionString)
         {
@@ -65,7 +72,36 @@ namespace MonexUp.Application
                 ConnectionPruningInterval = 10,  // remove conexões mortas do pool periodicamente
             };
 
+            if (!HasExplicitMaxPoolSize(connectionString))
+            {
+                builder.MaxPoolSize = DefaultMaxPoolSize;
+            }
+
+            // Sem conexões pré-abertas: o processo não segura slots do cluster ocioso.
+            builder.MinPoolSize = 0;
+
             return builder.ConnectionString;
+        }
+
+        // Lê a connection string crua: o NpgsqlConnectionStringBuilder devolve o
+        // default (100) para MaxPoolSize sem distinguir "ausente" de "definido como 100".
+        private static bool HasExplicitMaxPoolSize(string connectionString)
+        {
+            foreach (var pair in connectionString.Split(';'))
+            {
+                var separator = pair.IndexOf('=');
+                if (separator <= 0)
+                    continue;
+
+                // Npgsql ignora caixa e espaços no nome do keyword.
+                var keyword = pair.Substring(0, separator).Replace(" ", string.Empty).Trim();
+                if (keyword.Equals("MaximumPoolSize", StringComparison.OrdinalIgnoreCase) ||
+                    keyword.Equals("MaxPoolSize", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static void injectDependency(Type serviceType, Type implementationType, IServiceCollection services, bool scoped = true)

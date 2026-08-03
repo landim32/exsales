@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MonexUp.Domain.Interfaces.Factory;
 using MonexUp.Domain.Interfaces.Models;
 using MonexUp.Domain.Interfaces.Services;
@@ -17,17 +18,20 @@ namespace MonexUp.Domain.Impl.Services
         private readonly IOrderItemDomainFactory _itemFactory;
         private readonly ILofnProductClient _lofnProductClient;
         private readonly IUserClient _userClient;
+        private readonly ILogger<OrderService> _logger;
 
         public OrderService(
             IOrderDomainFactory orderFactory,
             IOrderItemDomainFactory itemFactory,
             ILofnProductClient lofnProductClient,
-            IUserClient userClient)
+            IUserClient userClient,
+            ILogger<OrderService> logger)
         {
             _orderFactory = orderFactory;
             _itemFactory = itemFactory;
             _lofnProductClient = lofnProductClient;
             _userClient = userClient;
+            _logger = logger;
         }
 
         public IOrderModel Insert(OrderInfo order)
@@ -135,10 +139,28 @@ namespace MonexUp.Domain.Impl.Services
                 Status = order.Status,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
-                User = await _userClient.GetByIdAsync(order.UserId, token),
-                Seller = order.SellerId.HasValue ? await _userClient.GetByIdAsync(order.SellerId.Value, token) : null,
+                User = await ResolveUser(order.UserId, token),
+                Seller = order.SellerId.HasValue ? await ResolveUser(order.SellerId.Value, token) : null,
                 Items = items
             };
+        }
+
+        /// <summary>
+        /// Resolves a NAuth user for display. NAuth throws (EnsureSuccessStatusCode)
+        /// when the account no longer exists — an order outliving its user must not
+        /// take down the whole listing, so degrade to a null user instead.
+        /// </summary>
+        private async Task<NAuth.DTO.User.UserInfo> ResolveUser(long userId, string token)
+        {
+            try
+            {
+                return await _userClient.GetByIdAsync(userId, token);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "NAuth GetByIdAsync failed for userId={UserId} — returning OrderInfo without user details.", userId);
+                return null;
+            }
         }
 
         public IList<IOrderModel> List(long networkId, long userId, OrderStatusEnum? status)

@@ -1,0 +1,26 @@
+meta {
+  name: List Invites
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{baseUrl}}/network/invite/list/:networkId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  networkId: 1
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Pending no-account invites of a network, for the /admin/teams list.
+  Manager-only: returns 403 when the caller is not a NetworkManager of the
+  network (or a platform admin). The payload carries invitee e-mail addresses,
+  which is why it is NOT part of listByNetwork.
+}

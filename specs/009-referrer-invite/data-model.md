@@ -2,6 +2,8 @@
 
 **No new tables, no migration.** The feature reuses the existing `monexup_user_networks` table and its `referrer_id` column, plus a stateless signed token (no persistence).
 
+> **Superseded in part.** Making invites visible on `/admin/teams` required persisting the no-account ones. See `docs/REFERRER_INVITE.md` — table `monexup_network_invites`, column `monexup_user_networks.invited_at`, and the 5th `inviteId` token segment (migration `NetworkInvites`). Everything described below still holds for existing-account invites.
+
 ## Entities
 
 ### UserNetwork (existing — reused)

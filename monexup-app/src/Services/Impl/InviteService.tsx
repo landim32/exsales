@@ -1,4 +1,4 @@
-import { InviteDetailInfo, InviteResultInfo } from "../../DTO/Domain/InviteInfo";
+import { InviteDetailInfo, InviteResultInfo, NetworkInviteInfo } from "../../DTO/Domain/InviteInfo";
 import IHttpClient from "../../Infra/Interface/IHttpClient";
 import IInviteService from "../Interfaces/IInviteService";
 
@@ -13,6 +13,14 @@ const InviteService: IInviteService = {
             networkId: networkId,
             email: email
         }, token);
+    },
+    listByNetwork: async (networkId: number, authToken: string) => {
+        return await _httpClient.doGetAuth<NetworkInviteInfo[]>("/Network/invite/list/" + networkId, authToken);
+    },
+    cancel: async (inviteId: number, authToken: string) => {
+        return await _httpClient.doPostAuth<void>("/Network/invite/cancel", {
+            inviteId: inviteId
+        }, authToken);
     },
     join: async (token: string, authToken: string) => {
         return await _httpClient.doPostAuth<void>("/Network/invite/join", {

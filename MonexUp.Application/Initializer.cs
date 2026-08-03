@@ -127,6 +127,7 @@ namespace MonexUp.Application
             #region Repository
             injectDependency(typeof(IInvoiceFeeRepository<IInvoiceFeeModel, IInvoiceFeeDomainFactory>), typeof(InvoiceFeeRepository), services, scoped);
             injectDependency(typeof(INetworkRepository<INetworkModel, INetworkDomainFactory>), typeof(NetworkRepository), services, scoped);
+            injectDependency(typeof(INetworkInviteRepository<INetworkInviteModel, INetworkInviteDomainFactory>), typeof(NetworkInviteRepository), services, scoped);
             injectDependency(typeof(IOrderRepository<IOrderModel, IOrderDomainFactory>), typeof(OrderRepository), services, scoped);
             injectDependency(typeof(IOrderItemRepository<IOrderItemModel, IOrderItemDomainFactory>), typeof(OrderItemRepository), services, scoped);
             injectDependency(typeof(IProductLinkRepository<IProductLinkModel, IProductLinkDomainFactory>), typeof(ProductLinkRepository), services, scoped);
@@ -176,6 +177,7 @@ namespace MonexUp.Application
             #region Factory
             injectDependency(typeof(IInvoiceFeeDomainFactory), typeof(InvoiceFeeDomainFactory), services, scoped);
             injectDependency(typeof(INetworkDomainFactory), typeof(NetworkDomainFactory), services, scoped);
+            injectDependency(typeof(INetworkInviteDomainFactory), typeof(NetworkInviteDomainFactory), services, scoped);
             injectDependency(typeof(IOrderDomainFactory), typeof(OrderDomainFactory), services, scoped);
             injectDependency(typeof(IOrderItemDomainFactory), typeof(OrderItemDomainFactory), services, scoped);
             injectDependency(typeof(IProductLinkDomainFactory), typeof(ProductLinkDomainFactory), services, scoped);

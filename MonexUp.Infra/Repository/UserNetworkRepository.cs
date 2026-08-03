@@ -32,9 +32,12 @@ namespace DB.Infra.Repository
             md.Role = (UserRoleEnum) row.Role;
             md.Status = (UserNetworkStatusEnum) row.Status;
             md.ReferrerId = row.ReferrerId;
+            md.InvitedAt = row.InvitedAt;
             return md;
         }
 
+        // NOTE: this is a FULL-row copy on every Update — any column omitted here
+        // is silently wiped on changeStatus/promote/demote. Keep in sync with DbToModel.
         private void ModelToDb(IUserNetworkModel md, UserNetwork row)
         {
             row.UserId = md.UserId;
@@ -43,6 +46,11 @@ namespace DB.Infra.Repository
             row.Role = (int)md.Role;
             row.Status = (int)md.Status;
             row.ReferrerId = md.ReferrerId;
+            // invited_at is `timestamp without time zone`; Npgsql refuses a Kind=Utc
+            // DateTime for that type, so normalize whatever the caller handed us.
+            row.InvitedAt = md.InvitedAt.HasValue
+                ? DateTime.SpecifyKind(md.InvitedAt.Value, DateTimeKind.Unspecified)
+                : null;
         }
 
         public IUserNetworkModel Insert(IUserNetworkModel model, IUserNetworkDomainFactory factory)

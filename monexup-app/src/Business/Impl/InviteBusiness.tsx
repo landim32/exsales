@@ -1,6 +1,6 @@
 import BusinessResult from "../../DTO/Business/BusinessResult";
 import AuthSession from "../../DTO/Domain/AuthSession";
-import { InviteDetailInfo, InviteResultInfo } from "../../DTO/Domain/InviteInfo";
+import { InviteDetailInfo, InviteResultInfo, NetworkInviteInfo } from "../../DTO/Domain/InviteInfo";
 import IInviteService from "../../Services/Interfaces/IInviteService";
 import AuthFactory from "../Factory/AuthFactory";
 import IInviteBusiness, { InviteUrlParam } from "../Interfaces/IInviteBusiness";
@@ -26,6 +26,56 @@ const InviteBusiness: IInviteBusiness = {
             return {
                 ...ret,
                 dataResult: retServ.data,
+                sucesso: true
+            };
+        } else {
+            return {
+                ...ret,
+                sucesso: false,
+                mensagem: retServ.messageError
+            };
+        }
+    },
+    listByNetwork: async (networkId: number) => {
+        let ret: BusinessResult<NetworkInviteInfo[]>;
+        let session: AuthSession = AuthFactory.AuthBusiness.getSession();
+        if (!session) {
+            return {
+                ...ret,
+                sucesso: false,
+                mensagem: "Not logged"
+            };
+        }
+        let retServ = await _inviteService.listByNetwork(networkId, session.token);
+        if (retServ.success) {
+            return {
+                ...ret,
+                dataResult: retServ.data,
+                sucesso: true
+            };
+        } else {
+            return {
+                ...ret,
+                sucesso: false,
+                mensagem: retServ.messageError
+            };
+        }
+    },
+    cancel: async (inviteId: number) => {
+        let ret: BusinessResult<boolean>;
+        let session: AuthSession = AuthFactory.AuthBusiness.getSession();
+        if (!session) {
+            return {
+                ...ret,
+                sucesso: false,
+                mensagem: "Not logged"
+            };
+        }
+        let retServ = await _inviteService.cancel(inviteId, session.token);
+        if (retServ.success) {
+            return {
+                ...ret,
+                dataResult: true,
                 sucesso: true
             };
         } else {

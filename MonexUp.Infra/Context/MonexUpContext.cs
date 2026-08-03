@@ -19,6 +19,8 @@ public partial class MonexUpContext : DbContext
 
     public virtual DbSet<Network> Networks { get; set; }
 
+    public virtual DbSet<NetworkInvite> NetworkInvites { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderItem> OrderItems { get; set; }
@@ -148,6 +150,47 @@ public partial class MonexUpContext : DbContext
                 .HasConstraintName("monexup_fk_product_link_network");
         });
 
+        modelBuilder.Entity<NetworkInvite>(entity =>
+        {
+            entity.HasKey(e => e.InviteId).HasName("monexup_network_invites_pkey");
+
+            entity.ToTable("monexup_network_invites");
+
+            entity.Property(e => e.InviteId).HasColumnName("invite_id");
+            entity.Property(e => e.NetworkId).HasColumnName("network_id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(180)
+                .IsRequired()
+                .HasColumnName("email");
+            entity.Property(e => e.InviterUserId).HasColumnName("inviter_user_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(1)
+                .HasColumnName("status");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasDefaultValueSql("(now() at time zone 'utc')")
+                .HasColumnName("created_at");
+            entity.Property(e => e.ConsumedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("consumed_at");
+            entity.Property(e => e.ConsumedUserId).HasColumnName("consumed_user_id");
+
+            // Partial unique index: at most one PENDING invite per (network, email).
+            // The filter must use the COLUMN name — "Status" would silently produce
+            // no index and allow duplicate pending invites.
+            entity.HasIndex(e => new { e.NetworkId, e.Email })
+                .IsUnique()
+                .HasFilter("status = 1")
+                .HasDatabaseName("ux_monexup_network_invites_pending");
+            entity.HasIndex(e => new { e.NetworkId, e.Status })
+                .HasDatabaseName("ix_monexup_network_invites_network_status");
+
+            entity.HasOne(d => d.Network).WithMany(p => p.NetworkInvites)
+                .HasForeignKey(d => d.NetworkId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("monexup_fk_network_invite_network");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("monexup_orders_pkey");
@@ -215,6 +258,9 @@ public partial class MonexUpContext : DbContext
             entity.Property(e => e.Status)
                 .HasDefaultValue(1)
                 .HasColumnName("status");
+            entity.Property(e => e.InvitedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("invited_at");
 
             entity.HasOne(d => d.Network).WithMany(p => p.UserNetworks)
                 .HasForeignKey(d => d.NetworkId)

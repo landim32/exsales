@@ -45,6 +45,34 @@ namespace MonexUp.ApiTests.Helpers
             };
         }
 
+        public static InviteRequestInfo CreateInviteRequestInfo(long networkId = 1, string? email = null)
+        {
+            var uniqueId = Guid.NewGuid().ToString("N")[..8];
+            return new InviteRequestInfo
+            {
+                NetworkId = networkId,
+                // Random address so it never resolves to a real NAuth account —
+                // this is the no-account branch of InviteByEmail.
+                Email = email ?? $"invitee-{uniqueId}@apitests.invalid"
+            };
+        }
+
+        public static InviteCancelInfo CreateInviteCancelInfo(long inviteId)
+        {
+            return new InviteCancelInfo
+            {
+                InviteId = inviteId
+            };
+        }
+
+        public static InviteActionInfo CreateInviteActionInfo(string token)
+        {
+            return new InviteActionInfo
+            {
+                Token = token
+            };
+        }
+
         public static NetworkChangeStatusInfo CreateNetworkChangeStatusInfo(long networkId = 1, long userId = 1, int status = 1)
         {
             return new NetworkChangeStatusInfo

@@ -1,0 +1,26 @@
+meta {
+  name: Cancel Invite
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/network/invite/cancel
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "inviteId": 1
+  }
+}
+
+docs {
+  Sets a pending no-account invite to Cancelled. Manager-only (403 otherwise).
+  Fails when the invite does not exist or is no longer pending.
+}

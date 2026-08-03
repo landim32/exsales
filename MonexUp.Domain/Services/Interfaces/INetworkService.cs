@@ -25,6 +25,8 @@ namespace MonexUp.Domain.Interfaces.Services
         Task<InviteDetailInfo> GetInviteDetail(long callerUserId, string inviteToken, string token);
         Task AcceptInvite(long callerUserId, string inviteToken);
         Task DeclineInvite(long callerUserId, string inviteToken);
+        Task<IList<NetworkInviteInfo>> ListPendingInvites(long networkId, long managerId, string token);
+        Task CancelInvite(long inviteId, long managerId, string token);
         Task ChangeStatus(long networkId, long userId, UserNetworkStatusEnum status, long managerId, string token);
         Task<bool> Promote(long networkId, long userId, long manegerId, string token);
         Task<bool> Demote(long networkId, long userId, long manegerId, string token);

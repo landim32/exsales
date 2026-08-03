@@ -40,6 +40,7 @@ namespace MonexUp.UnitTests.Services
                 _profileService.Object,
                 _fileClient.Object,
                 _inviteTokenSigner.Object,
+                new Mock<INetworkInviteDomainFactory>().Object,
                 new Mock<ILogger<NetworkService>>().Object
             );
         }

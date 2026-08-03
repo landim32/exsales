@@ -67,6 +67,71 @@ namespace MonexUp.UnitTests.Services
         }
 
         [Fact]
+        public void SignThenVerify_WithInviteId_ShouldRoundTripFifthSegment()
+        {
+            // Arrange
+            var signer = BuildSigner();
+            var token = signer.Sign(networkId: 3, inviterUserId: 55, targetUserId: 0, hasAccount: false, inviteId: 77);
+
+            // Act
+            var ok = signer.TryVerify(token, out InviteTokenPayload payload);
+
+            // Assert
+            Assert.True(ok);
+            Assert.Equal(3, payload.NetworkId);
+            Assert.Equal(55, payload.InviterUserId);
+            Assert.Equal(0, payload.TargetUserId);
+            Assert.False(payload.HasAccount);
+            Assert.Equal(77, payload.InviteId);
+        }
+
+        [Fact]
+        public void Sign_WithoutInviteId_ShouldEmitTheLegacyFourSegmentPayload()
+        {
+            // The 5th segment must be omitted when there is no invite row, so
+            // existing-account tokens stay byte-identical to the ones in the wild.
+            var signer = BuildSigner();
+
+            var token = signer.Sign(7, 100, 200, true);
+            var payloadText = Base64UrlDecode(token.Split('.')[0]);
+
+            Assert.Equal("7|100|200|1", payloadText);
+        }
+
+        [Fact]
+        public void TryVerify_WithLegacyFourSegmentToken_ShouldSucceedWithZeroInviteId()
+        {
+            // A token issued before invite persistence existed must keep working.
+            var signer = BuildSigner();
+            var token = signer.Sign(3, 55, 0, false);
+
+            var ok = signer.TryVerify(token, out InviteTokenPayload payload);
+
+            Assert.True(ok);
+            Assert.Equal(0, payload.InviteId);
+        }
+
+        [Fact]
+        public void TryVerify_WithTamperedInviteIdSegment_ShouldFail()
+        {
+            // Arrange
+            var signer = BuildSigner();
+            var token = signer.Sign(3, 55, 0, false, inviteId: 77);
+            var parts = token.Split('.');
+
+            // Swap the invite id while keeping the original signature.
+            var forgedPayload = Base64UrlEncode("3|55|0|0|999");
+            var tampered = $"{forgedPayload}.{parts[1]}";
+
+            // Act
+            var ok = signer.TryVerify(tampered, out InviteTokenPayload payload);
+
+            // Assert
+            Assert.False(ok);
+            Assert.Null(payload);
+        }
+
+        [Fact]
         public void TryVerify_WithTamperedPayloadSegment_ShouldFail()
         {
             // Arrange
@@ -158,5 +223,16 @@ namespace MonexUp.UnitTests.Services
         private static string Base64UrlEncode(string text)
             => Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text))
                 .TrimEnd('=').Replace('+', '-').Replace('/', '_');
+
+        private static string Base64UrlDecode(string value)
+        {
+            var padded = value.Replace('-', '+').Replace('_', '/');
+            switch (padded.Length % 4)
+            {
+                case 2: padded += "=="; break;
+                case 3: padded += "="; break;
+            }
+            return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+        }
     }
 }

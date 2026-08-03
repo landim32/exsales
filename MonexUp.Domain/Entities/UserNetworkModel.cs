@@ -28,6 +28,7 @@ namespace MonexUp.Domain.Impl.Models
         public UserRoleEnum Role { get; set; }
         public UserNetworkStatusEnum Status { get; set; }
         public long? ReferrerId { get; set; }
+        public DateTime? InvitedAt { get; set; }
 
         public INetworkModel GetNetwork(INetworkDomainFactory factory)
         {

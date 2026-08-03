@@ -24,6 +24,13 @@ namespace MonexUp.DTO.Network
         public UserNetworkStatusEnum Status { get; set; }
         [JsonPropertyName("referrerId")]
         public long? ReferrerId { get; set; }
+        /// <summary>
+        /// True when this membership originated from an invite (as opposed to a
+        /// self-service RequestAccess). Exposed as a bool — not the invited_at
+        /// timestamp — because this DTO is also served by the public listByNetwork.
+        /// </summary>
+        [JsonPropertyName("invited")]
+        public bool Invited { get; set; }
         [JsonPropertyName("network")]
         public NetworkInfo Network { get; set; }
         [JsonPropertyName("profile")]

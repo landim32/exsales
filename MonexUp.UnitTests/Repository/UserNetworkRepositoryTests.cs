@@ -96,5 +96,56 @@ namespace MonexUp.UnitTests.Repository
             Assert.Equal(11, result[0].UserId);
             Assert.Equal(UserNetworkStatusEnum.Active, result[0].Status);
         }
+
+        [Fact]
+        public void Insert_ShouldNormalizeInvitedAtToUnspecifiedKind()
+        {
+            // invited_at is `timestamp without time zone`. Npgsql throws on a
+            // Kind=Utc DateTime for that type, so the repository must normalize it.
+            using var ctx = NewContext();
+            var repo = new UserNetworkRepository(ctx);
+            var factory = FactoryStub();
+
+            var model = factory.BuildUserNetworkModel();
+            model.UserId = 11;
+            model.NetworkId = 4;
+            model.Status = UserNetworkStatusEnum.WaitForApproval;
+            model.InvitedAt = DateTime.UtcNow; // Kind = Utc
+
+            repo.Insert(model, factory);
+
+            var stored = ctx.UserNetworks.Single();
+            Assert.NotNull(stored.InvitedAt);
+            Assert.Equal(DateTimeKind.Unspecified, stored.InvitedAt!.Value.Kind);
+        }
+
+        [Fact]
+        public void Update_ShouldPreserveInvitedAt()
+        {
+            // ModelToDb does a FULL-row copy on every Update, so a column missing
+            // from it is silently wiped on changeStatus/approve/promote. Without
+            // this guard the "Convidado" badge would vanish the moment a manager
+            // approves the member.
+            const long networkId = 4;
+            const long userId = 11;
+            var invitedAt = new DateTime(2026, 8, 3, 12, 0, 0, DateTimeKind.Unspecified);
+
+            var row = Row(userId, networkId, UserNetworkStatusEnum.WaitForApproval);
+            row.InvitedAt = invitedAt;
+            using var ctx = SeededContext(row);
+            var repo = new UserNetworkRepository(ctx);
+            var factory = FactoryStub();
+
+            // Load → mutate only Status → save, exactly like ChangeStatus does.
+            var model = repo.Get(networkId, userId, factory);
+            Assert.Equal(invitedAt, model.InvitedAt);
+
+            model.Status = UserNetworkStatusEnum.Active;
+            repo.Update(model, factory);
+
+            var reloaded = repo.Get(networkId, userId, factory);
+            Assert.Equal(UserNetworkStatusEnum.Active, reloaded.Status);
+            Assert.Equal(invitedAt, reloaded.InvitedAt);
+        }
     }
 }

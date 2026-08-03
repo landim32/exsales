@@ -4,6 +4,7 @@ using MonexUp.Domain.Impl.Services;
 using MonexUp.Domain.Interfaces.Factory;
 using MonexUp.Domain.Interfaces.Models;
 using MonexUp.Domain.Interfaces.Services;
+using MonexUp.DTO.Network;
 using MonexUp.DTO.User;
 using NAuth.ACL.Interfaces;
 using zTools.ACL.Interfaces;
@@ -30,6 +31,7 @@ namespace MonexUp.UnitTests.Services
         private readonly Mock<IProfileService> _profileService = new();
         private readonly Mock<IFileClient> _fileClient = new();
         private readonly Mock<IInviteTokenSigner> _inviteTokenSigner = new();
+        private readonly Mock<INetworkInviteDomainFactory> _networkInviteFactory = new();
         private readonly NetworkService _service;
 
         public NetworkServiceInviteTests()
@@ -42,6 +44,7 @@ namespace MonexUp.UnitTests.Services
                 _profileService.Object,
                 _fileClient.Object,
                 _inviteTokenSigner.Object,
+                _networkInviteFactory.Object,
                 new Mock<ILogger<NetworkService>>().Object
             );
         }
@@ -104,23 +107,44 @@ namespace MonexUp.UnitTests.Services
             _inviteTokenSigner.Setup(s => s.TryVerify(It.IsAny<string>(), out payload)).Returns(result);
         }
 
+        /// <summary>
+        /// Builds the shared NetworkInvite "builder" mock returned by the factory,
+        /// mirroring SetupUserNetworkBuilder. Insert echoes the model back so the
+        /// service can read the generated InviteId off it.
+        /// </summary>
+        private Mock<INetworkInviteModel> SetupInviteBuilder(long inviteId = 55)
+        {
+            var builder = new Mock<INetworkInviteModel>();
+            builder.SetupAllProperties();
+            builder.Setup(m => m.Insert(It.IsAny<INetworkInviteDomainFactory>()))
+                .Returns(() =>
+                {
+                    builder.Object.InviteId = inviteId;
+                    return builder.Object;
+                });
+            builder.Setup(m => m.Update(It.IsAny<INetworkInviteDomainFactory>())).Returns(builder.Object);
+            _networkInviteFactory.Setup(f => f.BuildNetworkInviteModel()).Returns(builder.Object);
+            return builder;
+        }
+
         // ---- InviteByEmail --------------------------------------------------------
 
         [Fact]
-        public async Task InviteByEmail_NoAccount_ShouldSignTokenAndNotCreateMembership()
+        public async Task InviteByEmail_NoAccount_ShouldPersistPendingInvite()
         {
             // Arrange
             var builder = SetupUserNetworkBuilder();
             SetupManagerAccess(builder, InviterId);
             SetupNetwork("acme");
             SetupProfiles();
+            var inviteBuilder = SetupInviteBuilder(inviteId: 77);
 
             // NAuth throws when the email has no account.
-            _userClient.Setup(c => c.GetByEmailAsync("new@x.com")).ThrowsAsync(new Exception("404"));
-            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, 0, false)).Returns("no-account-token");
+            _userClient.Setup(c => c.GetByEmailAsync("New@X.com")).ThrowsAsync(new Exception("404"));
+            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, 0, false, 77)).Returns("no-account-token");
 
             // Act
-            var result = await _service.InviteByEmail(NetworkId, "new@x.com", InviterId, Token);
+            var result = await _service.InviteByEmail(NetworkId, "New@X.com", InviterId, Token);
 
             // Assert
             Assert.True(result.Sucesso);
@@ -128,8 +152,42 @@ namespace MonexUp.UnitTests.Services
             Assert.False(result.AlreadyMember);
             Assert.Equal("no-account-token", result.Token);
             Assert.Equal("acme", result.NetworkSlug);
-            _inviteTokenSigner.Verify(s => s.Sign(NetworkId, InviterId, 0, false), Times.Once);
+            _inviteTokenSigner.Verify(s => s.Sign(NetworkId, InviterId, 0, false, 77), Times.Once);
+
+            // The invite is persisted with a normalized e-mail...
+            inviteBuilder.Verify(m => m.Insert(It.IsAny<INetworkInviteDomainFactory>()), Times.Once);
+            inviteBuilder.VerifySet(m => m.Email = "new@x.com");
+            inviteBuilder.VerifySet(m => m.InviterUserId = InviterId);
+            inviteBuilder.VerifySet(m => m.Status = NetworkInviteStatusEnum.Pending);
+            // ...and NO membership row is created (there is no user id yet).
             builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task InviteByEmail_NoAccountTwice_ShouldReusePendingInvite()
+        {
+            // Arrange
+            var builder = SetupUserNetworkBuilder();
+            SetupManagerAccess(builder, InviterId);
+            SetupNetwork("acme");
+            SetupProfiles();
+            var inviteBuilder = SetupInviteBuilder();
+
+            var pending = new Mock<INetworkInviteModel>();
+            pending.SetupGet(m => m.InviteId).Returns(91);
+            inviteBuilder.Setup(m => m.GetPending(NetworkId, "new@x.com", It.IsAny<INetworkInviteDomainFactory>()))
+                .Returns(pending.Object);
+
+            _userClient.Setup(c => c.GetByEmailAsync("new@x.com")).ThrowsAsync(new Exception("404"));
+            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, 0, false, 91)).Returns("reused-token");
+
+            // Act
+            var result = await _service.InviteByEmail(NetworkId, "new@x.com", InviterId, Token);
+
+            // Assert — idempotent: the existing pending row is reused, not duplicated.
+            Assert.True(result.Sucesso);
+            Assert.Equal("reused-token", result.Token);
+            inviteBuilder.Verify(m => m.Insert(It.IsAny<INetworkInviteDomainFactory>()), Times.Never);
         }
 
         [Fact]
@@ -145,7 +203,7 @@ namespace MonexUp.UnitTests.Services
             // No existing membership for the invitee.
             builder.Setup(m => m.Get(NetworkId, InviteeId, It.IsAny<IUserNetworkDomainFactory>()))
                 .Returns((IUserNetworkModel)null!);
-            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, InviteeId, true)).Returns("existing-token");
+            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, InviteeId, true, 0)).Returns("existing-token");
 
             // Act
             var result = await _service.InviteByEmail(NetworkId, "invitee@x.com", InviterId, Token);
@@ -159,6 +217,8 @@ namespace MonexUp.UnitTests.Services
             builder.VerifySet(m => m.Status = UserNetworkStatusEnum.WaitForApproval);
             builder.VerifySet(m => m.Role = UserRoleEnum.Seller);
             builder.VerifySet(m => m.ReferrerId = InviterId);
+            // Provenance marker — this is what renders the "Convidado" badge.
+            builder.VerifySet(m => m.InvitedAt = It.IsAny<DateTime?>(), Times.Once);
         }
 
         [Fact]
@@ -176,7 +236,7 @@ namespace MonexUp.UnitTests.Services
                 .Returns(existing.Object);
 
             _userClient.Setup(c => c.GetByEmailAsync("invitee@x.com")).ReturnsAsync(Invitee(InviteeId));
-            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, InviteeId, true)).Returns("existing-token");
+            _inviteTokenSigner.Setup(s => s.Sign(NetworkId, InviterId, InviteeId, true, 0)).Returns("existing-token");
 
             // Act
             var result = await _service.InviteByEmail(NetworkId, "invitee@x.com", InviterId, Token);
@@ -199,7 +259,7 @@ namespace MonexUp.UnitTests.Services
                 .Returns((IUserNetworkModel)null!);
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(
                 () => _service.InviteByEmail(NetworkId, "invitee@x.com", InviterId, Token));
             builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Never);
         }
@@ -232,7 +292,7 @@ namespace MonexUp.UnitTests.Services
             // Assert
             Assert.False(result.Sucesso);
             builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Never);
-            _inviteTokenSigner.Verify(s => s.Sign(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<bool>()), Times.Never);
+            _inviteTokenSigner.Verify(s => s.Sign(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<bool>(), It.IsAny<long>()), Times.Never);
         }
 
         // ---- JoinFromInvite -------------------------------------------------------
@@ -267,6 +327,104 @@ namespace MonexUp.UnitTests.Services
             builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Once);
             builder.VerifySet(m => m.Status = UserNetworkStatusEnum.WaitForApproval);
             builder.VerifySet(m => m.ReferrerId = InviterId);
+        }
+
+        [Fact]
+        public async Task JoinFromInvite_WithInviteId_ShouldConsumeInviteAndMarkInvitedAt()
+        {
+            // Arrange
+            long joinerId = 300;
+            var builder = SetupUserNetworkBuilder();
+            SetupProfiles();
+            var inviteBuilder = SetupInviteBuilder();
+            SetupVerify(new InviteTokenPayload
+            {
+                NetworkId = NetworkId,
+                InviterUserId = InviterId,
+                TargetUserId = 0,
+                HasAccount = false,
+                InviteId = 77
+            });
+
+            builder.Setup(m => m.Get(NetworkId, joinerId, It.IsAny<IUserNetworkDomainFactory>()))
+                .Returns((IUserNetworkModel)null!);
+
+            var invite = new Mock<INetworkInviteModel>();
+            invite.SetupAllProperties();
+            invite.Object.NetworkId = NetworkId;
+            invite.Object.Status = NetworkInviteStatusEnum.Pending;
+            invite.Setup(m => m.Update(It.IsAny<INetworkInviteDomainFactory>())).Returns(invite.Object);
+            inviteBuilder.Setup(m => m.GetById(77, It.IsAny<INetworkInviteDomainFactory>())).Returns(invite.Object);
+
+            // Act
+            await _service.JoinFromInvite(joinerId, InviteToken);
+
+            // Assert — membership created as invited, invite row consumed.
+            builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Once);
+            builder.VerifySet(m => m.InvitedAt = It.IsAny<DateTime?>(), Times.Once);
+            invite.VerifySet(m => m.Status = NetworkInviteStatusEnum.Accepted);
+            invite.VerifySet(m => m.ConsumedUserId = joinerId);
+            invite.Verify(m => m.Update(It.IsAny<INetworkInviteDomainFactory>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task JoinFromInvite_WithAlreadyAcceptedInvite_ShouldNotUpdateItAgain()
+        {
+            // Arrange
+            long joinerId = 300;
+            var builder = SetupUserNetworkBuilder();
+            SetupProfiles();
+            var inviteBuilder = SetupInviteBuilder();
+            SetupVerify(new InviteTokenPayload
+            {
+                NetworkId = NetworkId,
+                InviterUserId = InviterId,
+                TargetUserId = 0,
+                HasAccount = false,
+                InviteId = 77
+            });
+
+            builder.Setup(m => m.Get(NetworkId, joinerId, It.IsAny<IUserNetworkDomainFactory>()))
+                .Returns((IUserNetworkModel)null!);
+
+            var invite = new Mock<INetworkInviteModel>();
+            invite.SetupGet(m => m.NetworkId).Returns(NetworkId);
+            invite.SetupGet(m => m.Status).Returns(NetworkInviteStatusEnum.Accepted);
+            inviteBuilder.Setup(m => m.GetById(77, It.IsAny<INetworkInviteDomainFactory>())).Returns(invite.Object);
+
+            // Act
+            await _service.JoinFromInvite(joinerId, InviteToken);
+
+            // Assert — idempotent, the consumed invite is left alone.
+            invite.Verify(m => m.Update(It.IsAny<INetworkInviteDomainFactory>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task JoinFromInvite_WithLegacyToken_ShouldEnrollWithoutTouchingInvites()
+        {
+            // Arrange — legacy 4-segment token: InviteId 0, nothing was ever persisted.
+            long joinerId = 300;
+            var builder = SetupUserNetworkBuilder();
+            SetupProfiles();
+            var inviteBuilder = SetupInviteBuilder();
+            SetupVerify(new InviteTokenPayload
+            {
+                NetworkId = NetworkId,
+                InviterUserId = InviterId,
+                TargetUserId = 0,
+                HasAccount = false,
+                InviteId = 0
+            });
+
+            builder.Setup(m => m.Get(NetworkId, joinerId, It.IsAny<IUserNetworkDomainFactory>()))
+                .Returns((IUserNetworkModel)null!);
+
+            // Act
+            await _service.JoinFromInvite(joinerId, InviteToken);
+
+            // Assert
+            builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Once);
+            inviteBuilder.Verify(m => m.GetById(It.IsAny<long>(), It.IsAny<INetworkInviteDomainFactory>()), Times.Never);
         }
 
         [Fact]
@@ -386,6 +544,9 @@ namespace MonexUp.UnitTests.Services
             builder.Verify(m => m.Insert(It.IsAny<IUserNetworkDomainFactory>()), Times.Once);
             builder.VerifySet(m => m.Status = UserNetworkStatusEnum.WaitForApproval);
             builder.VerifySet(m => m.ReferrerId = null);
+            // Gap-B regression guard: a self-service request is NOT an invite, so it
+            // must never render the "Convidado" badge.
+            builder.VerifySet(m => m.InvitedAt = null);
         }
     }
 }

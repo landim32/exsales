@@ -14,10 +14,12 @@ import { Skeleton } from "../../Components/ui/skeleton";
 import { MessageToastEnum } from "../../DTO/Enum/MessageToastEnum";
 import { UserNetworkStatusEnum } from "../../DTO/Enum/UserNetworkStatusEnum";
 import { UserRoleEnum } from "../../DTO/Enum/UserRoleEnum";
+import { UserRowKindEnum } from "../../DTO/Enum/UserRowKindEnum";
 import UserNetworkSearchInfo from "../../DTO/Domain/UserNetworkSearchInfo";
 import NetworkContext from "../../Contexts/Network/NetworkContext";
 import UserContext from "../../Contexts/User/UserContext";
 import AuthContext from "../../Contexts/Auth/AuthContext";
+import InviteContext from "../../Contexts/Invite/InviteContext";
 import FormField from "../NetworkEditPage/FormField";
 
 import InviteModal from "../Admin/InviteModal";
@@ -26,6 +28,7 @@ import UserSearchRow, {
   UserSearchRowHandlers,
   UserSearchRowLabels,
 } from "./UserSearchRow";
+import InviteSearchRow, { InviteRowHandlers } from "./InviteSearchRow";
 
 /**
  * UserSearchPage — redesigned `/admin/teams` and `/admin/teams/:pageNum`.
@@ -53,6 +56,7 @@ export default function UserSearchPage() {
   const userContext = useContext(UserContext);
   const networkContext = useContext(NetworkContext);
   const authContext = useContext(AuthContext);
+  const inviteContext = useContext(InviteContext);
 
   const { pageNum } = useParams();
 
@@ -127,6 +131,21 @@ export default function UserSearchPage() {
     authContext.sessionInfo?.token,
   ]);
 
+  // Pending no-account invites come from a separate manager-only endpoint —
+  // they are never part of the (public) listByNetwork payload.
+  useEffect(() => {
+    const networkId =
+      networkContext.network?.networkId ?? networkContext.userNetwork?.networkId;
+    if (!networkId) return;
+    if (!authContext.sessionInfo?.token) return;
+    inviteContext.listByNetwork(networkId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    networkContext.network?.networkId,
+    networkContext.userNetwork?.networkId,
+    authContext.sessionInfo?.token,
+  ]);
+
   const profileByUserId = useMemo(() => {
     const map = new Map<number, string>();
     const teams = (networkContext as any).teams as any[] | undefined;
@@ -148,6 +167,12 @@ export default function UserSearchPage() {
       networkContext.network?.slug ||
       (networkContext.userNetwork as any)?.network?.slug;
     if (slug) networkContext.listByNetwork(slug);
+
+    const networkId =
+      networkContext.network?.networkId ?? networkContext.userNetwork?.networkId;
+    if (networkId && authContext.sessionInfo?.token) {
+      inviteContext.listByNetwork(networkId);
+    }
   };
 
   const handlers: UserSearchRowHandlers = {
@@ -284,15 +309,47 @@ export default function UserSearchPage() {
           commission: t?.profile?.commission ?? 0,
           role: t?.role,
           status: t?.status,
+          kind: UserRowKindEnum.Member,
+          invited: t?.invited === true,
         };
       }) as UserNetworkSearchInfo[];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [(networkContext as any).teams, keyword]);
 
-  const users: UserNetworkSearchInfo[] = usersFromTeams;
+  // Pending invites rendered as rows. They have no userId / profile / role —
+  // InviteSearchRow keys off `kind`, not off any of those.
+  const invitesAsRows: UserNetworkSearchInfo[] = useMemo(() => {
+    const list = inviteContext.invites;
+    if (!Array.isArray(list)) return [];
+    const term = (keyword || "").trim().toLowerCase();
+    return list
+      .filter((i) => !term || (i.email || "").toLowerCase().includes(term))
+      .map((i) => ({
+        userId: 0,
+        networkId: i.networkId,
+        profileId: 0,
+        name: "",
+        email: i.email,
+        slug: "",
+        profile: "",
+        level: 0,
+        commission: 0,
+        role: UserRoleEnum.NoRole,
+        status: UserNetworkStatusEnum.WaitForApproval,
+        kind: UserRowKindEnum.PendingInvite,
+        inviteId: i.inviteId,
+        inviteToken: i.token,
+        inviteCreatedAt: i.createdAt,
+        inviterName: i.inviterName ?? undefined,
+      })) as UserNetworkSearchInfo[];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inviteContext.invites, keyword]);
+
+  // Pending invites first — they are the rows a manager still has to act on.
+  const users: UserNetworkSearchInfo[] = [...invitesAsRows, ...usersFromTeams];
   const isLoading =
-    Boolean((networkContext as any).loadingTeam) &&
-    usersFromTeams.length === 0;
+    (Boolean((networkContext as any).loadingTeam) || Boolean(inviteContext.loadingInvites)) &&
+    users.length === 0;
   const isEmpty = !isLoading && users.length === 0;
 
   // Team endpoint returns the full list — no server-side pagination. Hide the
@@ -318,6 +375,34 @@ export default function UserSearchPage() {
     viewStorefront: t("userSearchPage.actions.viewStorefront"),
     viewStorefrontMissingNetwork: t("userSearchPage.actions.viewStorefrontMissingNetwork"),
     viewStorefrontMissingSeller: t("userSearchPage.actions.viewStorefrontMissingSeller"),
+    invitedBadge: t("userSearchPage.badges.invited"),
+  };
+
+  const inviteRowHandlers: InviteRowHandlers = {
+    onCopyLink: async (invite) => {
+      // The invite link is rebuilt from the re-signed token — no-account invites
+      // always land on the sign-up flow.
+      const url = inviteContext.buildInviteUrl({
+        token: invite.inviteToken || "",
+        hasAccount: false,
+        networkSlug: networkContext.network?.slug || "",
+      });
+      try {
+        await navigator.clipboard.writeText(url);
+        showSuccessMessage(t("userSearchPage.messages.inviteLinkCopied"));
+      } catch (err) {
+        throwError(t("userSearchPage.messages.inviteCopyError"));
+      }
+    },
+    onCancel: async (invite) => {
+      const ret = await inviteContext.cancel(invite.inviteId || 0);
+      if (ret.sucesso) {
+        showSuccessMessage(t("userSearchPage.messages.inviteCancelled"));
+        refreshCurrentPage();
+      } else {
+        throwError(ret.mensagemErro);
+      }
+    },
   };
 
   const networkSlug = networkContext.network?.slug;
@@ -339,7 +424,11 @@ export default function UserSearchPage() {
         <InviteModal
           show={inviteOpen}
           networkId={inviteNetworkId}
-          onClose={() => setInviteOpen(false)}
+          onClose={() => {
+            setInviteOpen(false);
+            // A freshly generated no-account invite must show up right away.
+            refreshCurrentPage();
+          }}
         />
       )}
 
@@ -534,6 +623,25 @@ export default function UserSearchPage() {
             {!isLoading && !isEmpty && (
               <div role="rowgroup">
                 {users.map((user) => {
+                  if (user.kind === UserRowKindEnum.PendingInvite) {
+                    return (
+                      <InviteSearchRow
+                        key={`invite-${user.inviteId}`}
+                        invite={user}
+                        labels={{
+                          statusText: t("userSearchPage.status.invitePending"),
+                          invitedBadge: t("userSearchPage.badges.invited"),
+                          copyLink: t("userSearchPage.actions.copyInviteLink"),
+                          cancelInvite: t("userSearchPage.actions.cancelInvite"),
+                          invitedBy: user.inviterName
+                            ? t("userSearchPage.invitedBy", { name: user.inviterName })
+                            : undefined,
+                        }}
+                        handlers={inviteRowHandlers}
+                      />
+                    );
+                  }
+
                   const labels: UserSearchRowLabels = {
                     ...baseRowLabels,
                     roleText: showRole(user.role),
@@ -547,7 +655,7 @@ export default function UserSearchPage() {
                   };
                   return (
                     <UserSearchRow
-                      key={`${user.userId}-${user.networkId}`}
+                      key={`member-${user.userId}-${user.networkId}`}
                       user={enriched}
                       labels={labels}
                       handlers={handlers}

@@ -17,6 +17,12 @@ public partial class UserNetwork
 
     public int Status { get; set; }
 
+    /// <summary>
+    /// Set when the membership was created by an invite; null for self-service
+    /// RequestAccess. Drives the "Convidado" badge on /admin/teams.
+    /// </summary>
+    public DateTime? InvitedAt { get; set; }
+
     public virtual Network Network { get; set; }
 
     public virtual UserProfile Profile { get; set; }

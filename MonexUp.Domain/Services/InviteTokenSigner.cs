@@ -9,7 +9,11 @@ namespace MonexUp.Domain.Impl.Services
     /// <summary>
     /// HMAC-SHA256 signer for stateless invite links. Token format:
     /// <c>base64url(payload) + "." + base64url(HMAC-SHA256(secret, payload))</c>
-    /// where <c>payload = "networkId|inviterUserId|targetUserId|hasAccount"</c>.
+    /// where <c>payload = "networkId|inviterUserId|targetUserId|hasAccount"</c>,
+    /// optionally followed by <c>"|inviteId"</c> for no-account invites that have
+    /// a row in <c>monexup_network_invites</c>. The 5th segment is only emitted
+    /// when <c>inviteId &gt; 0</c>, so existing-account tokens stay byte-identical
+    /// to the pre-inviteId format and every already-issued link keeps verifying.
     /// Verification uses a constant-time comparison. Mirrors the HMAC pattern
     /// used by BillingService, lifted into a reusable helper.
     /// </summary>
@@ -26,9 +30,9 @@ namespace MonexUp.Domain.Impl.Services
             }
         }
 
-        public string Sign(long networkId, long inviterUserId, long targetUserId, bool hasAccount)
+        public string Sign(long networkId, long inviterUserId, long targetUserId, bool hasAccount, long inviteId = 0)
         {
-            var payload = BuildPayload(networkId, inviterUserId, targetUserId, hasAccount);
+            var payload = BuildPayload(networkId, inviterUserId, targetUserId, hasAccount, inviteId);
             var signature = ComputeHmac(payload);
             return $"{Base64UrlEncode(Encoding.UTF8.GetBytes(payload))}.{Base64UrlEncode(signature)}";
         }
@@ -67,12 +71,20 @@ namespace MonexUp.Domain.Impl.Services
                 return false;
             }
 
+            // 4 segments = legacy token (issued before no-account invites were
+            // persisted); 5 = current no-account token carrying its invite id.
             var segments = payloadText.Split('|');
-            if (segments.Length != 4
+            if ((segments.Length != 4 && segments.Length != 5)
                 || !long.TryParse(segments[0], out var networkId)
                 || !long.TryParse(segments[1], out var inviterUserId)
                 || !long.TryParse(segments[2], out var targetUserId)
                 || !int.TryParse(segments[3], out var hasAccountFlag))
+            {
+                return false;
+            }
+
+            long inviteId = 0;
+            if (segments.Length == 5 && !long.TryParse(segments[4], out inviteId))
             {
                 return false;
             }
@@ -82,13 +94,19 @@ namespace MonexUp.Domain.Impl.Services
                 NetworkId = networkId,
                 InviterUserId = inviterUserId,
                 TargetUserId = targetUserId,
-                HasAccount = hasAccountFlag == 1
+                HasAccount = hasAccountFlag == 1,
+                InviteId = inviteId
             };
             return true;
         }
 
-        private static string BuildPayload(long networkId, long inviterUserId, long targetUserId, bool hasAccount)
-            => $"{networkId}|{inviterUserId}|{targetUserId}|{(hasAccount ? 1 : 0)}";
+        private static string BuildPayload(long networkId, long inviterUserId, long targetUserId, bool hasAccount, long inviteId)
+        {
+            var payload = $"{networkId}|{inviterUserId}|{targetUserId}|{(hasAccount ? 1 : 0)}";
+            // Omit the 5th segment when there is no invite row, so existing-account
+            // tokens stay identical to the ones already in the wild.
+            return inviteId > 0 ? $"{payload}|{inviteId}" : payload;
+        }
 
         private byte[] ComputeHmac(string payload)
         {

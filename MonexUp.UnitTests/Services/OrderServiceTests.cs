@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using MonexUp.Domain.Impl.Services;
 using MonexUp.Domain.Interfaces.Factory;
@@ -28,7 +29,8 @@ namespace MonexUp.UnitTests.Services
                 _orderFactory.Object,
                 _itemFactory.Object,
                 _lofnProductClient.Object,
-                _userClient.Object);
+                _userClient.Object,
+                new Mock<ILogger<OrderService>>().Object);
         }
 
         private Mock<IOrderModel> SetupOrderLookup(long invoiceId, IOrderModel resolved)
@@ -80,6 +82,35 @@ namespace MonexUp.UnitTests.Services
             var result = _service.MarkPaidByInvoiceId(999);
 
             Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetOrderInfo_WhenNAuthUserIsMissing_ShouldDegradeInsteadOfThrowing()
+        {
+            // An order can outlive the NAuth account that placed it; NAuth then
+            // throws on GetByIdAsync. That must not take down /order/list.
+            const long userId = 42;
+            const long sellerId = 43;
+
+            var order = new Mock<IOrderModel>();
+            order.SetupAllProperties();
+            order.Object.OrderId = 1;
+            order.Object.NetworkId = 1;
+            order.Object.UserId = userId;
+            order.Object.SellerId = sellerId;
+            order.Object.Status = OrderStatusEnum.Active;
+            order.Setup(m => m.ListItems(It.IsAny<IOrderItemDomainFactory>()))
+                .Returns(new List<IOrderItemModel>());
+
+            _userClient.Setup(c => c.GetByIdAsync(It.IsAny<long>(), It.IsAny<string>()))
+                .ThrowsAsync(new HttpRequestException("404 (Not Found)"));
+
+            var info = await _service.GetOrderInfo(order.Object, "bearer-token");
+
+            Assert.NotNull(info);
+            Assert.Equal(1, info.OrderId);
+            Assert.Null(info.User);
+            Assert.Null(info.Seller);
         }
     }
 }

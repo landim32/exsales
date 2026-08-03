@@ -36,6 +36,8 @@ export interface UserSearchRowLabels {
   viewStorefront: string;
   viewStorefrontMissingNetwork: string;
   viewStorefrontMissingSeller: string;
+  /** Badge shown next to the status pill while an invited member is pending. */
+  invitedBadge: string;
 }
 
 export interface UserSearchRowHandlers {
@@ -95,7 +97,7 @@ interface ActionButtonProps {
   children: ReactNode;
 }
 
-function ActionButton({
+export function ActionButton({
   ariaLabel,
   onClick,
   tone = "neutral",
@@ -258,6 +260,10 @@ export default function UserSearchRow({
 }: UserSearchRowProps) {
   const initials = getInitials(user.name);
   const statusClass = statusPillClasses(user.status);
+  // Provenance badge: only while the invited member is still awaiting approval —
+  // once approved the row is just a regular member.
+  const showInvitedBadge =
+    user.invited === true && user.status === UserNetworkStatusEnum.WaitForApproval;
 
   return (
     <>
@@ -306,7 +312,12 @@ export default function UserSearchRow({
         </div>
 
         {/* Status pill */}
-        <div className="col-span-2 flex items-center justify-end" role="cell">
+        <div className="col-span-2 flex items-center justify-end gap-1" role="cell">
+          {showInvitedBadge && (
+            <span className="inline-flex items-center h-[26px] px-2 rounded-full bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20 text-xs font-semibold">
+              {labels.invitedBadge}
+            </span>
+          )}
           <span
             className={`inline-flex items-center h-[26px] px-2 rounded-full text-xs font-semibold ring-1 ${statusClass}`}
           >
@@ -358,6 +369,11 @@ export default function UserSearchRow({
             <ShieldCheck size={11} aria-hidden="true" />
             {labels.roleText}
           </span>
+          {showInvitedBadge && (
+            <span className="inline-flex items-center h-[24px] px-2 rounded-full bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20 text-[11px] font-semibold">
+              {labels.invitedBadge}
+            </span>
+          )}
           <span
             className={`inline-flex items-center h-[24px] px-2 rounded-full text-[11px] font-semibold ring-1 ${statusClass}`}
           >

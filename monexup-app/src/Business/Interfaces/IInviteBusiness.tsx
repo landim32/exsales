@@ -1,5 +1,5 @@
 import BusinessResult from "../../DTO/Business/BusinessResult";
-import { InviteDetailInfo, InviteResultInfo } from "../../DTO/Domain/InviteInfo";
+import { InviteDetailInfo, InviteResultInfo, NetworkInviteInfo } from "../../DTO/Domain/InviteInfo";
 import IInviteService from "../../Services/Interfaces/IInviteService";
 
 export interface InviteUrlParam {
@@ -11,6 +11,8 @@ export interface InviteUrlParam {
 export default interface IInviteBusiness {
     init: (inviteService: IInviteService) => void;
     invite: (networkId: number, email: string) => Promise<BusinessResult<InviteResultInfo>>;
+    listByNetwork: (networkId: number) => Promise<BusinessResult<NetworkInviteInfo[]>>;
+    cancel: (inviteId: number) => Promise<BusinessResult<boolean>>;
     join: (token: string) => Promise<BusinessResult<boolean>>;
     getDetail: (token: string) => Promise<BusinessResult<InviteDetailInfo>>;
     accept: (token: string) => Promise<BusinessResult<boolean>>;

@@ -509,6 +509,366 @@ namespace MonexUp.ApiTests.Controllers
             body.Sucesso.Should().BeFalse();
         }
 
+        // --- Invites (feature 012): pending no-account invites on /admin/teams ---
+
+        [Fact]
+        public async Task Invite_WithoutAuth_ShouldReturn401()
+        {
+            var param = TestDataHelper.CreateInviteRequestInfo();
+
+            var response = await _fixture.CreateAnonymousRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            response.StatusCode.Should().Be(401);
+        }
+
+        [Fact]
+        public async Task InviteList_WithoutAuth_ShouldReturn401()
+        {
+            var response = await _fixture.CreateAnonymousRequest("/network/invite/list/1")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+
+            response.StatusCode.Should().Be(401);
+        }
+
+        [Fact]
+        public async Task InviteCancel_WithoutAuth_ShouldReturn401()
+        {
+            var param = TestDataHelper.CreateInviteCancelInfo(1);
+
+            var response = await _fixture.CreateAnonymousRequest("/network/invite/cancel")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            response.StatusCode.Should().Be(401);
+        }
+
+        [Fact]
+        public async Task InviteJoin_WithoutAuth_ShouldReturn401()
+        {
+            var param = TestDataHelper.CreateInviteActionInfo("any-token");
+
+            var response = await _fixture.CreateAnonymousRequest("/network/invite/join")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            response.StatusCode.Should().Be(401);
+        }
+
+        [Fact]
+        public async Task InviteList_WithAuthAsManager_ShouldReturnOkAndEmptyForFreshNetwork()
+        {
+            var network = await CreateNetworkAsync();
+
+            var response = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+
+            response.StatusCode.Should().Be(200, "the creator is a NetworkManager of the network");
+            var invites = await response.GetJsonAsync<List<NetworkInviteInfo>>();
+            invites.Should().NotBeNull();
+            invites.Should().BeEmpty("a freshly created network has no pending invites");
+        }
+
+        [Fact]
+        public async Task InviteList_WithAuthNotManager_ShouldReturn403()
+        {
+            // Caller has no membership on this networkId → ValidateManager rejects.
+            // This is the security constraint: pending invites carry invitee e-mails.
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite/list/999999999")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+
+            response.StatusCode.Should().Be(403, "invitee e-mails must never reach a non-manager");
+            var body = await response.GetJsonAsync<ErrorResult>();
+            body.Sucesso.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Invite_NoAccountEmail_ShouldPersistPendingInviteAndAppearInList()
+        {
+            var network = await CreateNetworkAsync();
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId);
+
+            var inviteResponse = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            inviteResponse.StatusCode.Should().Be(200);
+            var result = await inviteResponse.GetJsonAsync<InviteResultInfo>();
+            result.Sucesso.Should().BeTrue();
+            result.HasAccount.Should().BeFalse("the address has no NAuth account");
+            result.AlreadyMember.Should().BeFalse();
+            result.Token.Should().NotBeNullOrEmpty();
+            result.NetworkSlug.Should().Be(network.Slug);
+
+            // The invite must now be visible to the manager on /admin/teams.
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            listResponse.StatusCode.Should().Be(200);
+
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+            var invite = invites.Should().ContainSingle().Subject;
+            invite.InviteId.Should().BeGreaterThan(0);
+            invite.NetworkId.Should().Be(network.NetworkId);
+            invite.Email.Should().Be(param.Email.ToLowerInvariant());
+            invite.Status.Should().Be(NetworkInviteStatusEnum.Pending);
+            invite.NetworkSlug.Should().Be(network.Slug);
+            invite.CreatedAt.Should().NotBe(default);
+            invite.InviterUserId.Should().Be(_fixture.ExtractUserIdFromToken());
+            invite.Token.Should().Be(result.Token, "the listing re-signs the very same deterministic token");
+        }
+
+        [Fact]
+        public async Task Invite_NoAccountEmail_TokenShouldCarryTheInviteIdSegment()
+        {
+            var network = await CreateNetworkAsync();
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId);
+
+            var inviteResponse = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            inviteResponse.StatusCode.Should().Be(200);
+            var result = await inviteResponse.GetJsonAsync<InviteResultInfo>();
+
+            // Payload = networkId|inviterUserId|targetUserId|hasAccount|inviteId
+            var segments = DecodeTokenPayload(result.Token).Split('|');
+            segments.Should().HaveCount(5, "no-account invites carry the invite id as a 5th segment");
+            segments[0].Should().Be(network.NetworkId.ToString());
+            segments[2].Should().Be("0", "there is no target user id yet");
+            segments[3].Should().Be("0", "hasAccount is false");
+            long.Parse(segments[4]).Should().BeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task Invite_NoAccountEmailTwice_ShouldReuseThePendingInvite()
+        {
+            var network = await CreateNetworkAsync();
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId);
+
+            var first = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            first.StatusCode.Should().Be(200);
+            var firstResult = await first.GetJsonAsync<InviteResultInfo>();
+
+            var second = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            second.StatusCode.Should().Be(200);
+            var secondResult = await second.GetJsonAsync<InviteResultInfo>();
+
+            secondResult.Token.Should().Be(firstResult.Token, "the same pending invite is reused, so the link is stable");
+
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+            invites.Should().ContainSingle("re-inviting the same address must not duplicate the pending row");
+        }
+
+        [Fact]
+        public async Task Invite_NoAccountEmail_ShouldStoreEmailLowercased()
+        {
+            var network = await CreateNetworkAsync();
+            var mixedCase = $"MiXeD-{Guid.NewGuid().ToString("N")[..8]}@ApiTests.Invalid";
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId, mixedCase);
+
+            var inviteResponse = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            inviteResponse.StatusCode.Should().Be(200);
+
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+
+            invites.Should().ContainSingle().Which.Email.Should().Be(mixedCase.ToLowerInvariant());
+        }
+
+        [Fact]
+        public async Task Invite_WithInvalidEmail_ShouldReturn400()
+        {
+            var network = await CreateNetworkAsync();
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId, "not-an-email");
+
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            response.StatusCode.Should().Be(400);
+            var result = await response.GetJsonAsync<InviteResultInfo>();
+            result.Sucesso.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Invite_NonManagerCaller_ShouldNotCreateInvite()
+        {
+            // Caller is not a member of this network → ValidateManager rejects
+            // before anything is persisted.
+            var param = TestDataHelper.CreateInviteRequestInfo(999999999);
+
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            response.StatusCode.Should().NotBe(401, "the caller is authenticated");
+            response.StatusCode.Should().NotBe(200, "a non-manager must not be able to invite");
+        }
+
+        [Fact]
+        public async Task InviteCancel_WithAuthAsManager_ShouldRemoveInviteFromList()
+        {
+            var network = await CreateNetworkAsync();
+            var invite = await CreatePendingInviteAsync(network);
+
+            var cancelResponse = await _fixture.CreateAuthenticatedRequest("/network/invite/cancel")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(TestDataHelper.CreateInviteCancelInfo(invite.InviteId));
+
+            cancelResponse.StatusCode.Should().Be(200);
+
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+            invites.Should().BeEmpty("a cancelled invite drops out of the pending listing");
+        }
+
+        [Fact]
+        public async Task InviteCancel_Twice_ShouldFailOnTheSecondCall()
+        {
+            var network = await CreateNetworkAsync();
+            var invite = await CreatePendingInviteAsync(network);
+            var param = TestDataHelper.CreateInviteCancelInfo(invite.InviteId);
+
+            var first = await _fixture.CreateAuthenticatedRequest("/network/invite/cancel")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            first.StatusCode.Should().Be(200);
+
+            var second = await _fixture.CreateAuthenticatedRequest("/network/invite/cancel")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            second.StatusCode.Should().NotBe(200, "the invite is no longer pending");
+        }
+
+        [Fact]
+        public async Task InviteCancel_WithUnknownInviteId_ShouldNotReturn200()
+        {
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite/cancel")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(TestDataHelper.CreateInviteCancelInfo(999999999));
+
+            response.StatusCode.Should().NotBe(401, "the caller is authenticated");
+            response.StatusCode.Should().NotBe(200, "the invite does not exist");
+        }
+
+        [Fact]
+        public async Task InviteJoin_WithTamperedToken_ShouldNotReturn200()
+        {
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite/join")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(TestDataHelper.CreateInviteActionInfo("forged.token"));
+
+            response.StatusCode.Should().NotBe(401, "the caller is authenticated");
+            response.StatusCode.Should().NotBe(200, "a token that fails HMAC verification must be rejected");
+        }
+
+        [Fact]
+        public async Task InviteJoin_WithPendingInviteToken_ShouldConsumeTheInvite()
+        {
+            // The caller is already an Active member (they created the network), so
+            // the membership side is an idempotent no-op — what this asserts is the
+            // 5th-segment reconciliation: the invite row must be marked Accepted and
+            // disappear from the pending listing.
+            var network = await CreateNetworkAsync();
+            var invite = await CreatePendingInviteAsync(network);
+
+            var joinResponse = await _fixture.CreateAuthenticatedRequest("/network/invite/join")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(TestDataHelper.CreateInviteActionInfo(invite.Token));
+
+            joinResponse.StatusCode.Should().Be(200);
+
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+            invites.Should().NotContain(i => i.InviteId == invite.InviteId,
+                "a consumed invite is Accepted and no longer pending");
+        }
+
+        [Fact]
+        public async Task InviteJoin_Twice_ShouldBeIdempotent()
+        {
+            var network = await CreateNetworkAsync();
+            var invite = await CreatePendingInviteAsync(network);
+            var param = TestDataHelper.CreateInviteActionInfo(invite.Token);
+
+            var first = await _fixture.CreateAuthenticatedRequest("/network/invite/join")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            first.StatusCode.Should().Be(200);
+
+            var second = await _fixture.CreateAuthenticatedRequest("/network/invite/join")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+
+            second.StatusCode.Should().Be(200, "joining with an already-consumed invite is a no-op, not an error");
+        }
+
+        [Fact]
+        public async Task ListByNetwork_CreatorMembership_ShouldNotBeFlaggedAsInvited()
+        {
+            // Gap-B guard: a membership created by any path other than an invite
+            // must report invited = false, so it never shows the "Convidado" badge.
+            var network = await CreateNetworkAsync();
+
+            var response = await _fixture.CreateAuthenticatedRequest($"/network/listByNetwork/{network.Slug}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+
+            response.StatusCode.Should().Be(200);
+            var members = await response.GetJsonAsync<List<UserNetworkInfo>>();
+            members.Should().OnlyContain(m => m.Invited == false,
+                "the network creator was not invited");
+        }
+
+        /// <summary>Creates a network-scoped pending invite and returns its listed row.</summary>
+        private async Task<NetworkInviteInfo> CreatePendingInviteAsync(NetworkInfo network)
+        {
+            var param = TestDataHelper.CreateInviteRequestInfo(network.NetworkId);
+            var response = await _fixture.CreateAuthenticatedRequest("/network/invite")
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(param);
+            response.StatusCode.Should().Be(200, "the caller is a manager and the address has no account");
+
+            var listResponse = await _fixture.CreateAuthenticatedRequest($"/network/invite/list/{network.NetworkId}")
+                .AllowAnyHttpStatus()
+                .GetAsync();
+            listResponse.StatusCode.Should().Be(200);
+
+            var invites = await listResponse.GetJsonAsync<List<NetworkInviteInfo>>();
+            return invites.Single(i => i.Email == param.Email.ToLowerInvariant());
+        }
+
+        private static string DecodeTokenPayload(string token)
+        {
+            var payload = token.Split('.')[0].Replace('-', '+').Replace('_', '/');
+            switch (payload.Length % 4)
+            {
+                case 2: payload += "=="; break;
+                case 3: payload += "="; break;
+            }
+            return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(payload));
+        }
+
         private async Task<NetworkInfo> CreateNetworkAsync()
         {
             var payload = TestDataHelper.CreateNetworkInsertInfo();

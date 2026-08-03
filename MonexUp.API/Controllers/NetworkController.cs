@@ -366,6 +366,49 @@ namespace MonexUp.API.Controllers
             return Ok(new { sucesso = true });
         }
 
+        /// <summary>
+        /// Pending no-account invites of a network, for the /admin/teams list.
+        /// Manager-only — the payload carries invitee e-mails, so it is deliberately
+        /// NOT merged into the public listByNetwork response.
+        /// </summary>
+        [Authorize]
+        [HttpGet("invite/list/{networkId}")]
+        public async Task<IActionResult> InviteList(long networkId)
+        {
+            var userSession = _userClient.GetUserInSession(HttpContext);
+            if (userSession == null) return Unauthorized();
+
+            var token = HttpContext.GetBearerToken();
+            try
+            {
+                var invites = await _networkService.ListPendingInvites(networkId, userSession.UserId, token);
+                return Ok(invites);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { sucesso = false, mensagemErro = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("invite/cancel")]
+        public async Task<IActionResult> InviteCancel([FromBody] InviteCancelInfo request)
+        {
+            var userSession = _userClient.GetUserInSession(HttpContext);
+            if (userSession == null) return Unauthorized();
+
+            var token = HttpContext.GetBearerToken();
+            try
+            {
+                await _networkService.CancelInvite(request.InviteId, userSession.UserId, token);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { sucesso = false, mensagemErro = ex.Message });
+            }
+            return Ok(new { sucesso = true });
+        }
+
         [Authorize]
         [HttpPost("changeStatus")]
         public async Task<IActionResult> ChangeStatus([FromBody] NetworkChangeStatusInfo changeStatus)

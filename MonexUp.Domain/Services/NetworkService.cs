@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace MonexUp.Domain.Impl.Services
         private readonly IProfileService _profileService;
         private readonly IFileClient _fileClient;
         private readonly IInviteTokenSigner _inviteTokenSigner;
+        private readonly INetworkInviteDomainFactory _networkInviteFactory;
         private readonly ILogger<NetworkService> _logger;
 
         public NetworkService(
@@ -37,6 +39,7 @@ namespace MonexUp.Domain.Impl.Services
             IProfileService profileService,
             IFileClient fileClient,
             IInviteTokenSigner inviteTokenSigner,
+            INetworkInviteDomainFactory networkInviteFactory,
             ILogger<NetworkService> logger
         )
         {
@@ -47,6 +50,7 @@ namespace MonexUp.Domain.Impl.Services
             _profileService = profileService;
             _fileClient = fileClient;
             _inviteTokenSigner = inviteTokenSigner;
+            _networkInviteFactory = networkInviteFactory;
             _logger = logger;
         }
 
@@ -277,6 +281,7 @@ namespace MonexUp.Domain.Impl.Services
                 ReferrerId = model.ReferrerId,
                 Role = model.Role,
                 Status = model.Status,
+                Invited = model.InvitedAt.HasValue,
                 Network = await GetNetworkInfo(model.GetNetwork(_networkFactory)),
                 User = userInfo,
                 Profile = _profileService.GetUserProfileInfo(
@@ -299,7 +304,7 @@ namespace MonexUp.Domain.Impl.Services
                 Name = model.Name,
                 Slug = model.Slug,
                 Template = model.Template,
-                ImageUrl = await _fileClient.GetFileUrlAsync("monexup", model.Image),
+                ImageUrl = await GetImageUrl(model),
                 Email = model.Email,
                 Plan = model.Plan,
                 Commission = model.Commission,
@@ -314,16 +319,49 @@ namespace MonexUp.Domain.Impl.Services
             };
         }
 
+        /// <summary>
+        /// Resolve a URL da imagem da rede. A imagem é opcional: se não houver arquivo
+        /// gravado ou se o storage não encontrar o objeto (404), devolve null em vez de
+        /// derrubar a listagem inteira de redes.
+        /// </summary>
+        private async Task<string> GetImageUrl(INetworkModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Image))
+            {
+                return null;
+            }
+
+            try
+            {
+                return await _fileClient.GetFileUrlAsync("monexup", model.Image);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogWarning(ex, "FileClient GetFileUrlAsync failed for networkId={NetworkId}, image={Image} — returning NetworkInfo without ImageUrl.", model.NetworkId, model.Image);
+                return null;
+            }
+        }
+
         public void RequestAccess(long networkId, long userId, long? referrerId)
         {
             CreatePendingMembership(networkId, userId, referrerId);
         }
 
         /// <summary>
+        /// UTC "now" with Kind=Unspecified. Npgsql refuses to write a Kind=Utc
+        /// DateTime into a `timestamp without time zone` column, which is the type
+        /// of invited_at / consumed_at. Mirrors ProductLinkRepository.
+        /// </summary>
+        private static DateTime UtcNowForDb()
+            => DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+
+        /// <summary>
         /// Creates a WaitForApproval membership (lowest profile, Seller role) with
         /// the given referrer. Shared by self-service RequestAccess and the invite flows.
+        /// <paramref name="invitedAt"/> is left null by RequestAccess — that is what
+        /// distinguishes "Convidado" from "solicitou acesso" on /admin/teams.
         /// </summary>
-        private void CreatePendingMembership(long networkId, long userId, long? referrerId)
+        private void CreatePendingMembership(long networkId, long userId, long? referrerId, DateTime? invitedAt = null)
         {
             var profiles = _userProfileFactory.BuildUserProfileModel().ListByNetwork(networkId, _userProfileFactory);
 
@@ -340,6 +378,7 @@ namespace MonexUp.Domain.Impl.Services
             model.Role = DTO.User.UserRoleEnum.Seller;
             model.Status = DTO.User.UserNetworkStatusEnum.WaitForApproval;
             model.ReferrerId = referrerId;
+            model.InvitedAt = invitedAt;
 
             model.Insert(_userNetworkFactory);
         }
@@ -354,7 +393,7 @@ namespace MonexUp.Domain.Impl.Services
             var networkAccess = _userNetworkFactory.BuildUserNetworkModel().Get(networkId, managerId, _userNetworkFactory);
             if (networkAccess == null)
             {
-                throw new Exception("Your dont have access to this network");
+                throw new UnauthorizedAccessException("Your dont have access to this network");
             }
 
             if (networkAccess.Role != DTO.User.UserRoleEnum.NetworkManager)
@@ -362,7 +401,7 @@ namespace MonexUp.Domain.Impl.Services
                 var user = await _userClient.GetByIdAsync(managerId, token);
                 if (user == null || !user.IsAdmin)
                 {
-                    throw new Exception("Your dont have access to this network");
+                    throw new UnauthorizedAccessException("Your dont have access to this network");
                 }
             }
         }
@@ -397,8 +436,24 @@ namespace MonexUp.Domain.Impl.Services
 
             if (invitee == null)
             {
-                // No account → new-person invite; nothing created until sign-up + join.
-                var newToken = _inviteTokenSigner.Sign(networkId, inviterUserId, 0, false);
+                // No account → no membership row is possible (the PK needs a user id),
+                // so the invite is persisted on its own table to stay visible on
+                // /admin/teams until the invitee signs up or the manager cancels.
+                var normalizedEmail = email.Trim().ToLowerInvariant();
+                var invite = _networkInviteFactory.BuildNetworkInviteModel()
+                    .GetPending(networkId, normalizedEmail, _networkInviteFactory);
+
+                if (invite == null)
+                {
+                    var newInvite = _networkInviteFactory.BuildNetworkInviteModel();
+                    newInvite.NetworkId = networkId;
+                    newInvite.Email = normalizedEmail;
+                    newInvite.InviterUserId = inviterUserId;
+                    newInvite.Status = NetworkInviteStatusEnum.Pending;
+                    invite = newInvite.Insert(_networkInviteFactory);
+                }
+
+                var newToken = _inviteTokenSigner.Sign(networkId, inviterUserId, 0, false, invite.InviteId);
                 return new InviteResultInfo
                 {
                     Sucesso = true,
@@ -429,12 +484,13 @@ namespace MonexUp.Domain.Impl.Services
                 // Inactive/Blocked → reactivate to pending with the new referrer.
                 existing.Status = DTO.User.UserNetworkStatusEnum.WaitForApproval;
                 existing.ReferrerId = inviterUserId;
+                existing.InvitedAt = UtcNowForDb();
                 existing.Update(_userNetworkFactory);
             }
             else
             {
                 // Create the pending membership at invite time (per FR-007/FR-012).
-                CreatePendingMembership(networkId, invitee.UserId, inviterUserId);
+                CreatePendingMembership(networkId, invitee.UserId, inviterUserId, UtcNowForDb());
             }
 
             var token2 = _inviteTokenSigner.Sign(networkId, inviterUserId, invitee.UserId, true);
@@ -461,6 +517,7 @@ namespace MonexUp.Domain.Impl.Services
                  || existing.Status == DTO.User.UserNetworkStatusEnum.WaitForApproval))
             {
                 // Idempotent — already active/pending.
+                ConsumeInvite(payload.InviteId, payload.NetworkId, joinerUserId);
                 return Task.CompletedTask;
             }
 
@@ -468,12 +525,43 @@ namespace MonexUp.Domain.Impl.Services
             {
                 existing.Status = DTO.User.UserNetworkStatusEnum.WaitForApproval;
                 existing.ReferrerId = payload.InviterUserId;
+                existing.InvitedAt = UtcNowForDb();
                 existing.Update(_userNetworkFactory);
+                ConsumeInvite(payload.InviteId, payload.NetworkId, joinerUserId);
                 return Task.CompletedTask;
             }
 
-            CreatePendingMembership(payload.NetworkId, joinerUserId, payload.InviterUserId);
+            CreatePendingMembership(payload.NetworkId, joinerUserId, payload.InviterUserId, UtcNowForDb());
+            ConsumeInvite(payload.InviteId, payload.NetworkId, joinerUserId);
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Marks the no-account invite row as Accepted once its invitee has signed
+        /// up. No-op for legacy 4-segment tokens (inviteId 0 — nothing was ever
+        /// persisted for those) and for invites already consumed or cancelled.
+        /// </summary>
+        private void ConsumeInvite(long inviteId, long networkId, long joinerUserId)
+        {
+            if (inviteId <= 0)
+            {
+                return;
+            }
+
+            var invite = _networkInviteFactory.BuildNetworkInviteModel()
+                .GetById(inviteId, _networkInviteFactory);
+
+            if (invite == null
+                || invite.NetworkId != networkId
+                || invite.Status != NetworkInviteStatusEnum.Pending)
+            {
+                return;
+            }
+
+            invite.Status = NetworkInviteStatusEnum.Accepted;
+            invite.ConsumedAt = UtcNowForDb();
+            invite.ConsumedUserId = joinerUserId;
+            invite.Update(_networkInviteFactory);
         }
 
         public async Task<InviteDetailInfo> GetInviteDetail(long callerUserId, string inviteToken, string token)
@@ -525,16 +613,79 @@ namespace MonexUp.Domain.Impl.Services
             if (existing == null)
             {
                 // Pending row should already exist from invite time; recreate idempotently if missing.
-                CreatePendingMembership(payload.NetworkId, callerUserId, payload.InviterUserId);
+                CreatePendingMembership(payload.NetworkId, callerUserId, payload.InviterUserId, UtcNowForDb());
             }
             else if (existing.Status == DTO.User.UserNetworkStatusEnum.Inactive)
             {
                 existing.Status = DTO.User.UserNetworkStatusEnum.WaitForApproval;
                 existing.ReferrerId = payload.InviterUserId;
+                existing.InvitedAt = UtcNowForDb();
                 existing.Update(_userNetworkFactory);
             }
             // Active/WaitForApproval → no-op; still requires manager approval.
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Pending no-account invites of a network, for the /admin/teams list.
+        /// Manager-only: the payload carries invitee e-mail addresses, so this is
+        /// never exposed through the public listByNetwork.
+        /// </summary>
+        public async Task<IList<NetworkInviteInfo>> ListPendingInvites(long networkId, long managerId, string token)
+        {
+            await ValidateManager(networkId, managerId, token);
+
+            var network = _networkFactory.BuildNetworkModel().GetById(networkId, _networkFactory);
+            if (network == null)
+            {
+                throw new Exception("Rede não encontrada.");
+            }
+
+            var invites = _networkInviteFactory.BuildNetworkInviteModel()
+                .ListPendingByNetwork(networkId, _networkInviteFactory);
+
+            var nameCache = new Dictionary<long, string>();
+            var result = new List<NetworkInviteInfo>();
+            foreach (var invite in invites)
+            {
+                result.Add(new NetworkInviteInfo
+                {
+                    InviteId = invite.InviteId,
+                    NetworkId = invite.NetworkId,
+                    Email = invite.Email,
+                    InviterUserId = invite.InviterUserId,
+                    InviterName = await ResolveName(invite.InviterUserId, token, nameCache),
+                    Status = invite.Status,
+                    CreatedAt = invite.CreatedAt,
+                    // Re-signed on read — the token itself is never stored.
+                    Token = _inviteTokenSigner.Sign(invite.NetworkId, invite.InviterUserId, 0, false, invite.InviteId),
+                    NetworkSlug = network.Slug
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>Manager-only cancellation of a pending no-account invite.</summary>
+        public async Task CancelInvite(long inviteId, long managerId, string token)
+        {
+            var invite = _networkInviteFactory.BuildNetworkInviteModel()
+                .GetById(inviteId, _networkInviteFactory);
+
+            if (invite == null)
+            {
+                throw new Exception("Convite não encontrado.");
+            }
+
+            await ValidateManager(invite.NetworkId, managerId, token);
+
+            if (invite.Status != NetworkInviteStatusEnum.Pending)
+            {
+                throw new Exception("Este convite não está pendente.");
+            }
+
+            invite.Status = NetworkInviteStatusEnum.Cancelled;
+            invite.Update(_networkInviteFactory);
         }
 
         public Task DeclineInvite(long callerUserId, string inviteToken)
@@ -661,7 +812,7 @@ namespace MonexUp.Domain.Impl.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "NAuth GetByIdAsync failed for userId={UserId} — hierarchy node rendered without name.", userId);
+                    _logger.LogWarning(ex, "NAuth GetByIdAsync failed for userId={UserId} — row rendered without name.", userId);
                 }
             }
 

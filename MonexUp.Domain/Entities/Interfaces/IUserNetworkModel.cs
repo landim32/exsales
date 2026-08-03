@@ -22,6 +22,12 @@ namespace MonexUp.Domain.Interfaces.Models
 
         long? ReferrerId { get; set; }
 
+        /// <summary>
+        /// Set when the membership came from an invite; null for self-service
+        /// RequestAccess. Discriminates "Convidado" from "solicitou acesso".
+        /// </summary>
+        DateTime? InvitedAt { get; set; }
+
         INetworkModel GetNetwork(INetworkDomainFactory factory);
         IUserProfileModel GetProfile(IUserProfileDomainFactory factory);
 
